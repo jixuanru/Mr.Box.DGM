@@ -1,0 +1,268 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>账户统计</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Styles.Render("~/ligerCss")
+    @Scripts.Render("~/ligerCollection")
+    <link href="~/Content/Client.css" rel="stylesheet" />
+   
+    <script src="~/Scripts/Client.js"></script>
+    <script src="~/Scripts/Highcharts/js/themes/dark-unica.js"></script>
+    <script src="~/Scripts/Highcharts/js/highcharts.js"></script>
+    <script src="~/Scripts/Highcharts/js/modules/exporting.js"></script>
+
+    <script type="text/javascript">
+        var _ClientUser, _startDateTime, _endDateTime;
+        var _AccountData; var manager, grid;
+        $(function () {
+            Init();
+            $(".Middle").css("width", "900px").css("height", "670px").css("margin-top", "70px");
+            $("#tab1").ligerTab({ width: '100%', height: 600 });
+            $("#txtLogin").ligerTextBox({});
+            $("#search").ligerButton({
+                width: 100, click: function () {
+                    f_search();
+                }
+            })
+            $("#Account_Data").ligerGrid({
+                columns: [
+                    { display: '账号', name: 'LOGIN', align: 'center', width: 140 },
+                    {
+                        display: '总入金数', name: 'DepositCount', minWidth: 60, width: 130, type: 'float',totalSummary: { type: 'sum,max,min' }
+                    },
+                    {
+                         display: '总出金数', name: 'WithdrawalCount', align: 'center', width: 130, type: 'float',
+                         totalSummary: { type: 'sum,max,min' }
+                    },
+                    {
+                         display: '总成交量', name: 'VOLUMECount', minWidth: 80, width: 100, type: 'float',
+                         totalSummary: { type: 'sum,max,min' }
+                    },
+                    {
+                         display: '佣金总和', name: 'COMMISSION', minWidth: 80, width: 100, type: 'float',
+                         totalSummary: { type: 'sum,max,min' }
+                    },
+                    {
+                         display: '账户净值', name: 'EQUITY', minWidth: 80, width: 110, type: 'float',
+                         totalSummary: { type: 'sum,max,min' }
+                    },
+                    {
+                         display: '利息总和', name: 'SWAPS', minWidth: 80, width: 130, type: 'float',
+                         totalSummary: { type: 'sum,max,min' }
+                    },
+                    {
+                         display: '账户余额', name: 'BALANCE', minWidth: 80, type: 'float',
+                         totalSummary: { type: 'sum,max,min' }
+                    }
+                ], height: 570
+            });
+            GetDateTime();
+
+            $("#stime").ligerDateEditor({ showTime: true, width: 150, initValue: _startDateTime });
+            $("#etime").ligerDateEditor({ showTime: true, width: 150, initValue: _endDateTime });
+
+            $("#btn_Select").ligerButton({
+                click: function () {
+                    var staticticsWait = $.ligerDialog.waitting("正在查询中,请稍后...");
+                    $.ajax({
+                        type: "POST", async: true, url: '@Url.Content("~/Agency/GetAccountStatistics")',
+                        data: { "stime": $("#stime").val() + ":00", "etime": $("#etime").val() + ":59" },
+                        success: function (data) {
+                            ParsingData(data);
+                            initChart();
+                            _AccountData = eval(data);
+                            _AccountData = { Rows: _AccountData };
+                            staticticsWait.close();
+                            manager=grid= $("#Account_Data").ligerGrid({
+                                columns: [
+                                    { display: '账号', name: 'LOGIN', align: 'center', width: 140 },
+                                    {
+                                        display: '总入金数', name: 'DepositCount', minWidth: 60, width: 130, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    },
+                                    {
+                                        display: '总出金数', name: 'WithdrawalCount', align: 'center', width: 130, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    },
+                                    {
+                                        display: '总成交量', name: 'VOLUMECount', minWidth: 80, width: 100, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    },
+                                    {
+                                        display: '佣金总和', name: 'COMMISSION', minWidth: 80, width: 100, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    },
+                                    {
+                                        display: '账户净值', name: 'EQUITY', minWidth: 80, width: 110, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    },
+                                    {
+                                        display: '利息总和', name: 'SWAPS', minWidth: 80, width: 130, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    },
+                                    {
+                                        display: '账户余额', name: 'BALANCE', minWidth: 80, type: 'float',
+                                        totalSummary: { type: 'sum,max,min' }
+                                    }
+                                ], pageSize: 20, where: f_getWhere(),
+                                data: $.extend(true, {}, _AccountData),
+                                width: '100%', height: 570
+                            })
+                        },
+                        error: function () { staticticsWait.close();}
+                    })
+                }
+            })
+        })
+
+
+        
+        function GetDateTime() {
+            var myDate = new Date();
+            var D_Year = myDate.getFullYear() + ""; //获取完整的年份(4位,1970-????)
+            var D_Month = myDate.getMonth() + 1;  //获取当前月份(0-11,0代表1月)
+            var D_Day = myDate.getDate(); //获取当前日(1-31)
+            var D_Hours = myDate.getHours(); //获取当前小时数(0-23)
+            var D_Minutes = myDate.getMinutes(); //获取当前分钟数(0-59)
+            var D_Seconds = myDate.getSeconds();     //获取当前秒数(0-59)
+            var D_Milliseconds = myDate.getMilliseconds();    //获取当前毫秒数(0-999)
+            _startDateTime = D_Year + "-" + (D_Month < 10 ? "0" + D_Month : D_Month) + "-01 00:00";
+            var h = D_Hours < 10 ? "0" + D_Hours : D_Hours;
+            var m = D_Minutes < 10 ? "0" + D_Minutes : D_Minutes;
+            _endDateTime = D_Year + "-" + (D_Month < 10 ? "0" + D_Month : D_Month) + "-" + (D_Day < 10 ? "0" + D_Day : D_Day) + " " + h + ":" + m;
+        }
+
+        var AccountData = new Array();//账户数据集
+        var DepositData = new Array(); //入金数据集
+        var WithdrawalData = new Array(); //出金数据集
+        var VOLUMEData = new Array(); //交易成交量数据集
+        var SWAPSData = new Array(); // 利息数据集
+        var BALANCEData = new Array(); //账户余额数据集
+
+        //解析报表数据
+        function ParsingData(data) {
+            var ZeroData = eval(data);
+            AccountData = new Array();
+            DepositData = new Array();
+            WithdrawalData = new Array();
+            VOLUMEData = new Array();
+            SWAPSData = new Array();
+            BALANCEData = new Array();
+            for (var i = 0; i < ZeroData.length; i++) {
+                AccountData.push(ZeroData[i].LOGIN);
+                DepositData.push(parseFloat(ZeroData[i].DepositCount));
+                WithdrawalData.push(parseFloat(ZeroData[i].WithdrawalCount));
+                VOLUMEData.push(parseFloat(ZeroData[i].VOLUMECount));
+                SWAPSData.push(parseFloat(ZeroData[i].SWAPS));
+                BALANCEData.push(parseFloat(ZeroData[i].BALANCE));
+            }
+        }
+
+        function f_search() {
+            manager.options.data = $.extend(true, {}, _AccountData);
+            manager.loadData(f_getWhere());
+        }
+        function f_getWhere() {
+            if (!manager) return null;
+            var clause = function (rowdata, rowindex) {
+                var key = $("#txtLogin").val();
+                return rowdata.LOGIN.indexOf(key) > -1;
+            };
+            return clause;
+        }
+    </script>
+    <style type="text/css">
+        #Chart_Data {
+            width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+    <div class="Middle">
+        <div style="margin-bottom:20px;">
+            <table border="0" cellpadding="0" cellspacing="0" style="line-height:30px;">
+                <tr><td style=" width:80px;text-align:center;">开始时间</td><td><input type="text" id="stime" /></td><td style=" width:80px;text-align:center;">结束时间</td><td><input type="text" id="etime" /></td><td style="width:80px;text-align:center;"><input type="button" class="l-button" id="btn_Select" value="查询" /></td><td style="width:60px;text-align:center">账号</td><td><input type="text" id="txtLogin" /></td><td style="padding-left:20px;"><input type="button" id="search" value="在结果中查询" /></td></tr>
+            </table>
+
+        </div>
+        <div id="tab1" style="width: 100%;overflow:hidden; border:1px solid #A3C0E8; ">
+            <div title="数据">
+                <div id="Account_Data"></div>
+            </div>
+            <div title="图表">
+
+
+                <div id="Chart_Data"></div>
+                <script type="text/javascript">
+
+                    function initChart() {
+                        $('#Chart_Data').highcharts({
+                            chart: {
+                                type: 'column'
+                            },
+                            title: {
+                                text: ''//主标题
+                            },
+                            subtitle: {
+                                text: ''//副标题
+                            },
+                            xAxis: {
+                                categories: AccountData
+                            },
+                            yAxis: {
+                                //min: 0,
+                                title: {
+                                    text: ''
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                    '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
+                                footerFormat: '</table>',
+                                shared: true,
+                                useHTML: true
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: '总入金量',
+                                data: DepositData
+                            }, {
+                                name: '总出金量',
+                                data: WithdrawalData
+                            }, {
+                                name: '总成交量',
+                                data: VOLUMEData
+                            }, {
+                                name: '利息总和',
+                                data: SWAPSData
+                            }, {
+                                name: '账户余额',
+                                data: BALANCEData
+                            }]
+                        });
+                    }
+                </script>
+
+            </div>
+
+        </div>
+    </div>
+    @{Html.RenderPartial("Foot");}
+</body>
+</html>

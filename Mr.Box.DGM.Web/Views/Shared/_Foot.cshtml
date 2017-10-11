@@ -1,0 +1,79 @@
+﻿<div class="about">
+
+    <div class="row bottom_logo">
+        <div class="col-sx-4 col-xs-offset-1">
+            <img src="~/Content/image/logo_bottom.png" class="img-responsive" />
+        </div>
+
+    </div>
+    <div class="row bottom_customer">
+        <div class="col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-ms-4 col-xs-10 col-xs-offset-1">
+            <div>亚洲客服中心:</div>
+            <div>办公室电话:+640 9358 0788</div>
+            <div>Add:Level 13,Tower 1,205 Queen Street,</div>
+            <div>Auckland Central,New Zealand</div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-ms-4 col-xs-10 col-xs-offset-1">
+            <div>中国客服中心:</div>
+            <div>办公室电话:+86 021 50835084</div>
+            <div>办公室传真:021-51355839</div>
+            <div>地址:上海市浦东新区盛夏路666号E幢605室</div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-ms-4 col-xs-10 col-xs-offset-1">
+            <div><a href="@Url.Content("~/Account/AccountApplication")">开设账户</a></div>
+            <div>邮箱:<a href="mailto:info@dgmfx.com">info@dgmfx.com</a></div>
+            <div>网址:<a href="http://www.dgmfx.com">http://www.dgmfx.com</a></div>
+            <div>客服电话:400-895-8686</div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 2.5%; margin-bottom: 1%; color: #FFF;line-height: 250%">
+        <div class="col-lg-10 col-lg-offset-1 col-xs-10 col-xs-offset-1 text-center foot-risk">
+            保证金方式的外汇\差价合约交易涉及较高风险，未必适合所有投资者，您在通过DGMFX进行投资之前应该谨慎考虑自身的投资目标，财务状况和抗风险能力；投资保证金类杠杆交易过程中你可能会损失大部分甚至损失超过存入本金的资金，本网站的介绍不具备适应所有投资者，建议您向独立的财务或投资顾问寻求专业的投资建议。<br />
+            在投资前请认真阅读本站的风险披露
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 col-sm-10 col-sm-offset-1 col-xs-11">
+            <ul class="list-unstyled foot_list text-center">
+                <li><a href="@Url.Content("~/About/Risk")">风险披露</a></li>
+                <li>|</li>
+                <li><a href="@Url.Content("~/About/PrivacyProtection")">隐私政策</a></li>
+                <li>|</li>
+                <li><a href="@Url.Content("~/About/PendingStatement")">挂单声明</a></li>
+                <li>|</li>
+                <li><a href="@Url.Content("~/About/WebsiteDisclaimer")">网站免责</a></li>
+                <li>|</li>
+                <li><a href="@Url.Content("~/About/ComplaintsProposals")">投诉建议</a></li>
+                <li>|</li>
+                <li><a href="@Url.Content("~/About/Index")">关于我们</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row bottom_copy">
+        <div class="col-xs-12 text-center">
+            &copy; cn.dgmfx.com. All Rights Reserved. 版权所有
+        </div>
+    </div>
+</div>
+
+
+
+<script src="@Url.Content("~/Scripts/js/AdminEx/jquery.nicescroll.js")"></script>
+<script type="text/javascript">
+    $(function () {
+        $("html")
+            .niceScroll({
+                styler: "fb",
+                cursorcolor: "#1ab394",//设置滚动条颜色
+                cursorwidth: '6',//滚动条的宽度像素
+                cursorborderradius: '0px',//滚动条的边框圆角
+                background: '#424f63',
+                spacebarenabled: false,//许使用空格键滚动（默认：true）
+                cursorborder: '0',//CSS定义边框，默认为“1px solid #FFF”
+                zindex: '1000'//改变滚动条的DIV的z-index值，默认值是9999
+            });
+    });
+</script>
+

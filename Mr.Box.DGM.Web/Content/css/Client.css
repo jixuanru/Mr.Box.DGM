@@ -1,0 +1,164 @@
+﻿html{background:url('../images/bg.png') center center repeat;background-attachment:fixed;} 
+body{font-family:'微软雅黑';background-color: transparent;}
+
+/*.account_left table .thead{background-color:#bbb4b4;height:40px;padding-left:20px;}
+.account_left table tbody tr td{line-height:35px;}
+.account_left table  tr td{border:1px solid gray;}
+.account_left table tbody .left{width:100px; padding-left:20px;}
+.account_left table tbody ._left{width:60px;padding-left:20px;}
+.account_left table tbody tr td input{margin-left:20px;}
+.account_left table tfoot input{margin:20px 0 20px 300px;width:120px;}
+.account_left{margin-left:100px; height:250px; margin-top:20px;margin-bottom:30px;}
+.account_left table label{margin-left:30px;}*/
+
+/*.account_right table .thead{background-color:#bbb4b4;height:40px;padding-left:20px;}
+.account_right table tbody tr td{line-height:35px;}
+.account_right table  tr td{border:1px solid gray;}
+.account_right table tbody .left{width:100px; padding-left:20px;}
+.account_right table tbody ._left{width:60px;padding-left:20px;}
+.account_right table tbody tr td input{margin-left:20px;}
+.account_right table tfoot input{margin:20px 0 20px 300px;width:120px;}
+.account_right{margin-left:100px; height:250px; margin-top:20px;margin-bottom:30px;}
+.account_right table label{margin-left:30px;}*/
+
+/*.depoist_left{float:left;margin-left:150px;}
+.depoist_right{float:left; margin-left:90px;}
+.depoist_left,.depoist_right:hover{cursor:pointer;}
+
+
+#screen {filter: alpha(opacity=80);opacity: 0.8;background-color: gray;display: none;z-index: 1;position: absolute;}
+
+#showDialog {width: 750px;height: 400px;display: none;position: fixed;_position: absolute;z-index: 999;
+border: 1px solid gray;top: 50%;left: 50%;margin: -200px 0 0 -375px;overflow: hidden;}
+
+.depclose {position: absolute;top: 0;right: 0;z-index: 1111;}
+
+.depclose:hover {cursor: pointer;}
+
+#UPdate{float:right;margin-right:20px;text-decoration:underline; }
+#UPdate:hover{cursor:pointer;color:red;text-decoration:underline;}
+
+.draw{margin:5px auto 5px 0;}
+.draw a{border:1px solid gray;padding:2px 5px 2px 5px; text-decoration:none;margin-left:20px;}
+
+.Head {width:100%;height:120px;background-color:#2D4198;}
+.Head_logo{width:379px; height:52px; margin:auto; padding-top:50px;}
+.Head_menu{width:770px;height:30px; margin:auto;padding-top:4px;}
+.Head_menu ul li{list-style-type:none;float:left; padding-left:20px;padding-right:20px;font-size:15px;}
+.Head_menu ul li a{text-decoration:none;color:white;}
+.Head_menu2{float:right;}
+.Head_menu2 ul li{list-style-type:none;float:left; padding-left:5px;padding-right:5px;font-size:13px;color:#2D4198;}
+.Head_menu2 ul li a{text-decoration:none;color:#2D4198;}
+
+.Head_menu2_1{float:right;}
+.Head_menu2_1 ul li{list-style-type:none;float:left; padding-left:5px;padding-right:5px;font-size:13px;color:#4D4D4D;}
+.Head_menu2_1 ul li a{text-decoration:none;color:#4D4D4D;}
+
+.userName{margin-right:20px;}
+.loginout{background-color:#2D4198;color:white;border:1px solid #2D4198;padding:0px 15px 0px 15px;text-decoration:none;}
+.loginout_1{background-color:#b63b4d;color:white;border:1px solid #b63b4d;padding:0px 15px 0px 15px;text-decoration:none;}
+
+.Middle {width:660px;margin:auto;height:445px;margin-top:40px;}
+.Middle_content{width:660px;}
+.Middle .Middle_content div{float: left;margin: 2px;}
+.Middle .Middle_content div a{position: relative;left: 65px;top: 50px;text-decoration: none;color: white;font-size: 20px;border:none;}
+.Middle .Middle_content a {position:relative; border:none;float: left; width: 213px;height: 130px;z-index:999;}
+.Middle .Middle_content a div{position:relative;z-index:9;}
+.Middle .Middle_content a div:hover{cursor: pointer;}
+.Middle .Middle_content a div label {position: relative;left: 65px;top: 50px;z-index:0;}
+.Middle .Middle_content a div label:hover {z-index:0;}
+
+.bottomMenu{width:575px; height:30px;margin:auto;margin-top:40px;}
+.bottomMenu ul li{list-style-type:none;float:left;padding:0 10px 0 10px;}
+.bottomMenu ul li a{color:black;width:100px;text-decoration:none;}
+.bottomMenu ul li a:hover{text-decoration:underline;}
+.Foot{width:580px;height:60px;margin:auto;margin-top:15px;}
+.Foot .foot_menu{ height:25px; width:530px;margin:auto; color:#555152;font-size:14px;}
+.Foot .foot_menu ul li{list-style-type:none;float:left;padding:5px 5px 5px 5px;}
+.Foot .foot_menu ul li a{text-decoration:none;color:#555152;}
+.Foot .copyright{width:300px;margin:auto; margin-top:10px;}
+.Foot .copyright a{text-decoration:none;}
+
+
+.tree{width: 230px;height: 720px;overflow: auto;}
+#MT4User{border:none;}*/
+
+/*********************************************在线课堂***********************************************
+.room_left{width:40%;float:left;height:280px;}
+.room_right{width:60%;float:right;height:280px;}
+#Room1,#Room2{height:50px;width:220px;font-size:18px;font-family:'微软雅黑',Arial;margin-left:100px;}
+#Room1{margin-top:70px;}
+.room_left,.room_right a{text-decoration:none;color:#2D4198;}
+
+
+.room_left,.room_right a:hover{text-decoration:underline;color:#2D4198;}
+#Room2{margin-top:20px;}
+.abtn{border:1px solid #2D4198;padding:0 10px 0 10px;margin-left:5px;margin-right:5px;text-decoration:none;}
+.abtn:hover{text-decoration:none;cursor:pointer;}
+.room_login,.room_register{margin:auto;border:1px solid gray;height:280px;}
+.room_register{display:none;}
+.room_register .left{text-align:right;padding-right:20px; width:70px;}
+.room_register .right{padding-left:20px;}
+.room_register .room_register_left{width:530px;margin:auto;margin-top:50px;}
+.room_register .room_register_right{width:230px;}
+
+
+
+/***********************************************在线课堂轮播图*************************************************************/
+
+
+@media(max-width:455px) {
+    .topcontainer .hidden-sm{display:none;}
+}
+
+/*********************按钮***********************/
+.btn-success {background-color:#02ad9b;border-color:#FFF;}
+.btn-success.active.focus, 
+.tn-success.active:hover,
+.btn-success:active:focus,
+.open>.dropdown-toggle.btn-success:focus, 
+.open>.dropdown-toggle.btn-success:hover,
+.btn-success:hover,.btn-success:active,
+.open>.dropdown-toggle.btn-success ,.btn-success:focus{background-color:#FFF;color:#02ad9b;border-color:#02ad9b}
+
+.panel{background-color:transparent;}
+.panel-title{color:#02ad9b;}
+
+.input-group {display: inline-flex;}
+.input-group-addon {width: auto; padding:8px 12px;}
+
+.glyphicon ,.caret,.fa{color:#02ad9b;}
+
+::selection {
+    background-color: #02ad9b;
+    color: #FFF;
+}
+.daterangepicker td.active, .daterangepicker td.active:hover {
+    background-color: #02ad9b;
+    border-color: #3071a9;
+    color: #fff;
+}
+.daterangepicker td.available:hover,.daterangepicker th.available:hover{background:#02ad9b;}
+
+/***********************分页控件**************************/
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    z-index: 2;
+    color: #FFF;
+    cursor: default;
+    background-color: #02ad9b;
+    border-color: #02ad9b;
+}
+.pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
+    z-index: 3;
+    color: #02ad9b;
+    background-color: #FFF;
+    border-color: #02ad9b;
+}
+.pagination > li > a, .pagination > li > span {color:#02ad9b}
+/***********************分页控件**************************/
+
+
+
+
+
+

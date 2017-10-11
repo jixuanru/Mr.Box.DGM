@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MT4桥接|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section class="bridge">
+            <div class="container">
+                <h1 class="text-center">机构客户至尊方案</h1>
+                <p>
+                    作为全球最大的ECN交易系统，DGM Currenex为所有参与者（银行，金融机构或者个人用户）搭建了外汇交易的电子平台并在交易数据的传输中扮演着至关重要的角色。交易者的订单都会集中输入到DGM Currenex,而平台的匹配系统会第一时间自动撮合即时的反向订单。通常而言，订单撮合所需的平均时间均在850微妙以内，极迅速的执行力能最大限度地降低滑点可能造成的不利影响。
+                </p>
+                <p>
+                    为机构客户提供MT4全称为Meta Trader 4，时下最流行的交易软件。我们给您提供从软件购买到软件、服务器的安装及设置，和currenex数据的对接一条龙服务，同时我们拥有强大的技术团队，当您那边出现技术性问题时，会在第一时间选派具有专业技术的实施团队为您排忧解难。真正的实现让您省钱又省心。提供优质的STP桥接，在交易中，桥的稳定性是至关重要，它直接决定了报价数据源与MT4对接的稳定性，我们提供的桥是经过公司多年来稳定性测试的，并且已提供给了很多客户使用，得到了广大客户的一致好评，真正做到的让您省心又省钱。可以根据客户的需求帮助您建立CRM客户管理系统，利用信息科学技术，您的企业能更高效地为客户提供满意、周到的服务，以提高客户满意度、忠诚度，让您更便捷的了解客户信息，从而达成更好的客户管理效果。
+                </p>
+               
+                我们主推一站式服务&nbsp;&nbsp;&nbsp;&nbsp;<a href="~/UpLoad/Software/Application.pdf" class="btn btn-success">申请材料下载</a>
+                <img src="~/Content/image/bridge.png" class="img-responsive center-block" />
+                @*我们主推一站式服务&nbsp;&nbsp;&nbsp;&nbsp;<a href="~/UpLoad/Software/Application.pdf" class="btn btn-success">申请材料下载</a>
+                <img src="~/Content/image/bridge_table3.png" class="img-responsive center-block" />*@
+            </div>
+        </section>
+
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>

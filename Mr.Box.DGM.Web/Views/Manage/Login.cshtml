@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>管理员登陆</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Styles.Render("~/AdminExcss")
+    <script src="~/Scripts/layer/layer.js"></script>
+    @Styles.Render("~/css")
+    <script type="text/javascript">
+        $(function() {
+            $(".btn-login")
+                .click(function() {
+                    Login();
+                });
+        });
+        function Ckeck() {
+            if ($("#txtName").val().replace(/[]/g, "").length === 0) {
+                layer.msg('请输入账号', function () {});
+                return false;
+            } if ($("#txtPwd").val().replace(/[]/g, "").length === 0) {
+                layer.msg('请输入密码', function () { });
+                return false;
+            }
+            return true;
+        }
+        function Login() {
+            if (Ckeck()) {
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: '@Url.Content("~/Manage/ManagerLogin")',
+                    data: { "userName": $("#txtName").val(), "userPwd": $("#txtPwd").val() },
+                    success: function(data) {
+                        if (new Boolean(data)) {
+                            window.location = '@Url.Content("~/Manage/Index")';
+                        } else {
+                            layer.msg('账号密码错误', { icon: 5 });
+                        }
+                    }
+                });
+            }
+        }
+        $(document).keydown(function (event) {
+            if (event.keyCode === 13) {
+                Login();
+            }
+        })
+    </script>
+</head>
+<body class="login-body">
+    <div class="container">
+        <div class="form-signin">
+            <div class="form-signin-heading text-center">
+                <h1 class="sign-title">Sign In</h1>
+                <img src="~/Content/image/logo_admin.png" alt="" />
+            </div>
+            <div class="login-wrap">
+                <input type="text" class="form-control" placeholder="User ID" autofocus id="txtName">
+                <input type="password" class="form-control" placeholder="Password" id="txtPwd">
+                <button class="btn btn-lg btn-login btn-block" type="button">
+                    <i class="fa fa-check"></i>
+                </button>
+                <div class="registration">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+*********INFO*********
+时间:20170105 12:00:45 线程ID:[6] NDC:[(null)] 
+
+
+------------------------------------------------------------------
+*********INFO*********
+时间:20170105 12:03:54 线程ID:[11] NDC:[(null)] 
+<?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:shar="http://currenex.com/webservice/shared"><soapenv:Header/><soapenv:Body><loginRequest><userID>DGMFXS008</shar:userID><password>zhangjie6100</shar:password><loginType>GetOrCreateSession</shar:loginType></loginRequest></soapenv:Body></soapenv:Envelope>
+
+*********INFO*********
+时间:20170105 12:03:56 线程ID:[11] NDC:[(null)] 
+<?xml version="1.0" encoding="utf-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <soapenv:Body>
+  <soapenv:Fault>
+   <faultcode xmlns:ns1="http://xml.apache.org/axis/">ns1:Client.NoSOAPAction</faultcode>
+   <faultstring></faultstring>
+  </soapenv:Fault>
+ </soapenv:Body>
+</soapenv:Envelope>
+

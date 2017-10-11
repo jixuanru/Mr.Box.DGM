@@ -1,0 +1,413 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>在线课堂</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Styles.Render("~/ligerCss")
+    @Scripts.Render("~/ligerCollection")
+
+    <link href="~/Content/Client.css" rel="stylesheet" />
+    <script src="~/Scripts/Client.js"></script>
+    <script src="~/Scripts/My97DatePicker/calendar.js"></script>
+    <script src="~/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            getOnlineClass(getDate());
+            getOnlineClassNotice();
+            $("#goBack").ligerButton({
+                click: function () {
+                    $("#ClassShow").css("display", "block");
+                    $("#ClassReg").css("display", "none");
+                }
+            })
+        })
+        //获取在线课堂最新公告
+        function getOnlineClassNotice() {
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Account/getOnlineClassNotice")',
+                success: function (data) {
+                    var msg = eval(data);
+                    $("#lbl_classtime").text(msg[0].CreateDate);
+                    $("#lbl_classtitle").text(msg[0].NewsTitle);
+                    $("#lbl_classauthor").text(msg[0].NewsAuthor);
+                    $("#lbl_classcon").text(msg[0].NewsHomeText)
+                }
+            })
+        }
+        //点击日历 获取任务
+        function getOnlineClass(s) {
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Account/GetOnlineClass")', data: { "time": s },
+                success: function (data) {
+                    if (data.length == 0) {
+                        $("#lbl_teacher").text("暂无安排");
+                        $("#lbl_title").text("暂无安排");
+                        $("#lbl_con").text("暂无安排");
+                        $("#lbl_time").text(s);
+                    }
+                    else {
+                        var msg = eval(data);
+                        $("#lbl_teacher").text(msg[0].NewsAuthor);
+                        $("#lbl_title").text(msg[0].NewsTitle);
+                        $("#lbl_con").text(msg[0].NewsHomeText);
+                        $("#lbl_time").text(msg[0].CreateDate);
+                    }
+
+                }
+            })
+        }
+        //获取当前时间
+        function getDate() {
+            var myDate = new Date();
+            var y = myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+            var m = myDate.getMonth() + 1;       //获取当前月份(0-11,0代表1月)
+            var d = myDate.getDate();        //获取当前日(1-31)
+            return y + "-" + setD(m) + "-" + setD(d);
+        }
+        //设置月份  日期
+        function setD(n) {
+            var _n;
+            if (n < 10) {
+                _n = '0' + n;
+            } else {
+                _n = n;
+            } return _n;
+        }
+
+        function showReg() {
+            var online = $("#ClassShow").css("display");
+            if (online == "block") {
+                $("#ClassShow").css("display", "none");
+                $("#ClassReg").css("display", "block");
+            }
+            else {
+                $("#ClassReg").css("display", "none");
+                $("#ClassShow").css("display", "block");
+            }
+        }
+        function playBack() { $.ligerDialog.alert("程序猿正在努力研发中...","提示",null); }
+    </script>
+    <script type="text/javascript">
+        //window.location = "http://ws.fsmeeting.com//userMgr/entermeeting.jsp?roomID=82751&userName=DGM&userPwd=666666";
+        var username = "DGM";
+        $(function () {
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Agency/GetLogin")',
+                success: function (data) {
+                    var _data = data.split("#");
+                    username += _data[1];
+                    $("#username").val(username);
+                }
+            })
+            Init();
+            $(".Middle").css("width", "900px").css("height", "900px").css("margin-top", "70px").css("background-color","white");
+
+            $("#username").ligerTextBox({ readonly: true, width: 180 });
+            $("#password").ligerTextBox({ width: 180 });
+            $("#nickname").ligerTextBox({ width: 180 });
+
+            ///注册账号
+            $("#btn_reg").ligerButton();
+
+
+        })
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                ClassLogin();
+            }
+        })
+        //登录课堂
+        function ClassLogin() {
+            $("#screen").width($(document).width());
+            $("#screen").height($(document).height());
+            $("#screen").css("left", "0px").css("top", "0px");
+            $("#screen").show();//遮罩层
+            $("#showDialog").show();//弹出层
+            var roomid = '82751'; var roomName = '亚洲理财俱乐部';
+            IsReg(roomid, roomName, username);
+        }
+
+
+
+        //注册用户
+        function regUser() {
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Agency/regUser")',
+                data: { "username": username, "password": $("#password").val(), "nickname": $("#nickname").val() },
+                success: function (code) {
+                    switch (code) {
+                        case "0000": $.ligerDialog.success("注册成功!"); $("#ClassShow").css("display", "block");$("#ClassReg").css("display", "none"); break;
+                        case "0003": $.ligerDialog.warn("您已经注册过账号,可以直接进入教室!");
+                            $("#ClassShow").css("display", "block"); $("#ClassReg").css("display", "none");
+                            //setTimeout(LoginRoom('82751', '亚洲理财俱乐部',username), 3000);
+                            break;
+                        case "0007": $.ligerDialog.warn("密码格式不正确(长度,字符)!"); break;
+                        case "0010": $.ligerDialog.warn("姓名格式不正确(长度,字符)!"); break;
+                        default: break;
+                    }
+                }
+            })
+        }
+        //用户是否注册
+        function IsReg(roomid, roomName, username) {
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Agency/GetUserInfo")',
+                data: { "userId": "", "searchName": username },
+                success: function (data_isreg) {
+                    if (data_isreg == "error") {
+                        $("#showDialog").hide();//弹出层
+                        $("#screen").hide();//遮罩层
+                        $.ligerDialog.error("您还没有注册账号,暂不支持该功能!");
+                    }
+                    else {
+                        IsOnlineActivtion(roomid, roomName, username);
+                    }
+                }
+            })
+        }
+        //在线课堂是否激活
+        function IsOnlineActivtion(roomid, roomName, username) {
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Agency/OnlineClassIsActivtion")', data: { "username": username },
+                success: function (data_isactive) {
+                    if (data_isactive == "0" || data_isactive == "") {//账户未激活
+                        $("#showDialog").hide();//弹出层
+                        $("#screen").hide();//遮罩层
+                        $.ligerDialog.confirm('账号还未激活,是否现在激活?', function (yes) {
+                            if (yes == true) {
+                                $.ajax({
+                                    type: "POST", async: true, url: '@Url.Content("~/Agency/OnlineClassActivtion")', data: { "username": username },
+                                    success: function (sss) {
+                                        if (sss == "error") {
+                                            $.ligerDialog.warn("激活失败,请与DGM客服联系!");
+                                        }
+                                        else {
+                                            $.ligerDialog.success("激活成功!您的使用时间为:" + sss + "");
+                                        }
+                                    }
+                                })
+                            }
+                        })
+                    } else if (data_isactive == "no") {
+                        $("#showDialog").hide();//弹出层
+                        $("#screen").hide();//遮罩层
+                        $.ligerDialog.warn("账户不存在,请联系DGM客服!");
+                    }
+                    else {
+                        LoginRoom(roomid, roomName, username);
+                    }
+                }
+            })
+
+        }
+        //登录在线课堂
+        function LoginRoom(roomid, roomName, username) {
+            $.ajax({
+                type: "POST", async: false, url: '@Url.Content("~/Agency/OnlineClassLogin")',
+                data: { "roomId": roomid, "roomName": roomName, "username": username },
+                success: function (data) {
+                    if (data == "error") {
+                        $("#showDialog").hide();//弹出层
+                        $("#screen").hide();//遮罩层
+                        $.ligerDialog.warn("您的在线课堂时间已到期,如需继续使用请联系DGM客服!");
+                    }
+                    else {
+                        //alert(data);
+                        $("#showDialog").hide();//弹出层
+                        $("#screen").hide();//遮罩层
+                        windowOpen(data, '_blank');
+                        //openW = $.ligerDialog.open({
+                        //    height: 600, width: 800, title: '好视通',
+                        //    url: data,
+                        //    showMax: false,
+                        //    showToggle: false,
+                        //    showMin: false,
+                        //    isResize: false,
+                        //    slide: false
+                        //});
+                        //setTimeout(function () { openW.hide(); }, 5000);
+                        //alert(data);
+                        //$("#openWin").attr("action", data);
+                        //$("#openWin").submit();
+                        //window.open(data, '好视通', 'height=600, width=800,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+                    }
+                }
+            })
+        }
+
+        function windowOpen(url,target) {
+            var a = document.createElement("a");
+            a.setAttribute("href", url);
+            if (target == null) {
+                target = '';
+            }
+            a.setAttribute("target", target);
+            document.body.appendChild(a);
+            if (a.click) {
+                a.click();
+            } else {
+                try {
+                    var evt = document.createEvent('Event');
+                    a.initEvent('click', true, true);
+                    a.dispatchEvent(evt);
+                } catch (e) {
+                    window.open(url,target);
+                }
+            }
+            document.body.removeChild(a);
+        }
+        //新窗口打开
+       
+        //当前窗口打开 
+        //windowOpen('http://niu.xunlei.com/', '_self');
+    </script>
+    <style type="text/css">
+        
+    </style>
+    <script type="text/javascript">
+        var time = "";
+        var index = 1;
+        $(function () {
+            showimg(index);
+            //鼠标移入移出
+            $(".imgnum span").hover(function () {
+                clearTimeout(time);
+                var icon = index;
+                //var icon =$(this).text();
+                $(".imgnum span").removeClass("onselect").eq(icon - 1).addClass("onselect");
+                $("#banner_img li").hide().stop(true, true).eq(icon - 1).fadeIn("slow");
+            }, function () {
+                index = index > 3 ? 1 : parseInt(index) + 1;//$(this).text() > 4 ? 1 : parseInt(index) + 1; alert(index);//parseInt($(this).text()) + 1;
+                time = setTimeout("showimg(" + index + ")", 3000);
+            });
+        });
+
+        function showimg(num) {
+            index = num;
+            $(".imgnum span").removeClass("onselect").eq(index - 1).addClass("onselect");
+            $("#banner_img li").hide().stop(true, true).eq(index - 1).fadeIn("slow");
+            index = index + 1 > 4 ? 1 : index + 1;
+            time = setTimeout("showimg(" + index + ")", 3000);
+        }
+        function setIndex(id) {
+            index = id;
+        }
+    </script>
+    <style type="text/css">
+        #ClassReg {display: none;}
+        #ClassReg table { margin: auto;margin-top: 20px; }
+        #dateTimePicker{padding-left:30px;}
+        #screen {filter: alpha(opacity=80);opacity: 0.8;background-color: black;display: none;z-index: 1;position: absolute;}
+        #showDialog {width: 450px;height: 350px;display: none;position: fixed;_position: absolute;z-index: 999;top: 50%;left: 50%;margin: -200px 0 0 -200px;overflow: hidden;}
+        .clear {overflow: hidden;clear: both;width: 0px;height: 0px;}
+.imgbox {width: 820px; margin: 0 auto;text-align: center;}
+ul {padding: 0px;margin: 0px;}
+ul li {float: left;list-style: none;}
+ul li.select {display: block;}
+.imgnum {text-align: center;/*float: right;*/ margin: -30px 0px 0px 3px;position: relative; padding-top: -25px;color: white;}
+.imgnum span {/**border-radius: 10px;兼容圆角*/
+                /*font: normal normal bold 12px/15px 微软雅黑;*/
+ border: none;font-size: 1px;margin-left: -2px;float: left;height: 6px; margin-top: -3px; padding: 1px 103px 1px 103px;display: block;background-color: #c0c7e0;color: #c0c7e0;cursor: pointer; }
+.imgnum span.onselect { color: #8395c9;background-color: #8395c9; /*选中背景*/}
+    </style>
+</head>
+<body style="background-color:#F0F0EF;">
+    @{Html.RenderPartial("Top");}
+    <div class="Middle">
+        <div style="margin:0 40px 20px 40px;">
+            <div style="height:280px;padding-top:20px;">
+                <div class="imgbox">
+                    <ul id="banner_img">
+                        <li><img src="~/Images/OnlineClass/class01.jpg" width="820" /></li>
+                        <li><img src="~/Images/OnlineClass/class02.jpg" width="820" /></li>
+                        <li><img src="~/Images/OnlineClass/class03.jpg" width="820" /></li>
+                        <li><img src="~/Images/OnlineClass/class04.jpg" width="820" /></li>
+                    </ul>
+                    <div class="clear"></div>
+                    <div class="imgnum">
+                        <span class="onselect" onmouseover="setIndex(1)"></span>
+                        <span onmouseover="setIndex(2)"></span>
+                        <span onmouseover="setIndex(3)"></span>
+                        <span onmouseover="setIndex(4)"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:200px;margin-top:25px;">
+                
+                <div style="float:left;width:250px;cursor:pointer; border-top:2px solid #2D4297;background-color:#F0F0EF;">
+                    <div id="dateTimePicker"></div>
+                    <script>
+                        WdatePicker({
+                            eCont: 'dateTimePicker', skin: 'default', lang: 'en',highLineWeekDay:false, onpicked: function (dp) {
+                                $("#lbl_time").text(dp.cal.getDateStr());
+                                getOnlineClass(dp.cal.getDateStr());
+                            }
+                        })
+                    </script>
+                </div>
+
+                <div style="float:left;">
+                    <div style="border-top:2px solid #2D4297; margin:0 5px 0 20px; width:520px;color:#2D4297;">
+                        <div style="margin:20px 5px 0 5px; color:#2D4297;font-size:15px;border-bottom:1px solid #2D4297;">课程安排</div>
+                        <a onclick="" href="javascript:ClassLogin();" style="float:right; border:1px solid #2D4297;padding:1px 5px 1px 5px; color:#2D4297;  font-size:15px;text-decoration:none;font-family: '微软雅黑';margin:15px 20px;">进入课堂</a>
+                        <p style="margin:10px 5px 0 5px;font-size:14px;">主讲人:<label id="lbl_teacher" style="color:#2D4297;margin-left:10px;"></label></p>
+                        <p style="margin:5px 5px 0 5px;font-size:14px;">主&nbsp;&nbsp;&nbsp;题:<label id="lbl_title" style="color:#2D4297;margin-left:10px;"></label></p>
+                        <p style="margin:5px 5px 0 5px;font-size:14px;">时&nbsp;&nbsp;&nbsp;间:<label id="lbl_time" style="color:#2D4297;margin-left:10px;"></label></p>
+                        <p style="margin:5px 5px 0 5px;font-size:14px;">内容简介:<label id="lbl_con" style="color:#2D4297;margin-left:10px;"></label></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="ClassShow" style="height:202px;margin-top:20px;">
+                <div style="float:left;width:250px;height:200px;">
+                    <a href="javascript:playBack();"><img src="~/Images/OnlineClass/classpayback.jpg" width="250" /></a>
+                </div>
+                
+
+                <div style="float:left;width:530px;height:100px;line-height:25px;font-size:13px; margin-left:30px;">
+                    <div style="font-size:17px;margin-bottom:5px;border-bottom:2px solid #2D4297;color:#2D4297;">公告</div>
+                    <label id="lbl_classtime" style="color:#2D4297;"></label>
+                    <label id="lbl_classtitle" style="color:#2D4297;padding-left:10px;"></label>
+                    <label id="lbl_classauthor" style="color:#2D4297;padding-left:10px;"></label><br />
+                    <label id="lbl_classcon" style="color:#2D4297;"></label>
+                </div>
+                <div style="overflow:hidden;"></div>
+                <form id="openWin" action="" target="_blank" method="post"></form>
+            </div>
+
+
+            <div id="ClassReg" style="border-top:2px solid #2D4297;height:200px;margin-top:20px;">
+                <table border="0" cellpadding="0" cellspacing="0" style="line-height:30px;">
+                    <tr><td class="left">账号</td><td><input type="text" id="username" /></td><td class="right">账号为DGM+MT4交易账号,此账号不能更改</td></tr>
+                    <tr><td class="left">密码</td><td><input type="password" id="password" /></td><td class="right">密码为4-32位,若不填写,则默认为MT4密码</td></tr>
+                    <tr><td class="left">姓名</td><td><input type="text" id="nickname" /></td><td class="right">您的姓名,若不填写,则默认为账号</td></tr>
+                    <tr><td colspan="3" style="padding:15px 0 20px 100px; "><input type="button" id="goBack" value="返回" /><input type="button" id="btn_reg" value="注册" onclick="regUser();" style="margin-left:20px;" /></td></tr>
+                </table>
+                <p style="padding-left:190px;font-size:13px;">如果你已经注册视频课堂账户,请直接<a href="javascript:ClassLogin();" style="padding: 1px 10px 1px 10px; border:1px solid #2D4297;  margin-right: 5px;margin-left:5px;">登录课堂</a></p>
+            </div>
+
+
+            <p style="margin-top:25px;color:#2D4297;font-size:14px;line-height:22px;">如果您是第一次进入视频课堂，请点击&nbsp;<a href="javascript:showReg();" style="padding: 1px 10px 1px 10px; border:1px solid #2D4297;  margin-right: 5px;margin-left:5px;">注册</a>，注册完成后才可以进入视频课堂，如果还不能进去，请与<a href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn" target="_blank" class="mailcolor">在线客服</a>联系或者拨打我们的客服热线:400-895-8686</p>
+
+            <div style="margin-top:15px;font-size:14px;color:#00A29A;">在线视频课堂每日开放时间为13:30分</div>
+        </div>
+    </div>
+    @{Html.RenderPartial("Foot");}
+
+    <div id="screen">
+
+    </div>
+    <div id="showDialog">
+        <img src="~/Images/img/loading2.gif" width="450" />
+    </div>
+</body>
+</html>

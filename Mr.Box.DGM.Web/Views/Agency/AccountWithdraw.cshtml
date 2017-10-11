@@ -1,0 +1,67 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>账户出金</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[3]).addClass("active");
+        })
+    </script>
+    <style>
+        .draw a {
+            border: 1px solid #02ad9b;
+            color: #02ad9b;
+            padding: 2px 5px;
+            margin-left: 20px;
+            text-decoration: none;
+        }
+
+        p {
+            line-height: 200%;
+        }
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">账户出金</h3>
+            </div>
+            <div class="panel-body">
+                <p>1、提交取款申请</p>
+                <p>网上提交取款申请是安全便捷的取款方式。网上提交取款申请表格的填写只需大约 10 分钟。</p>
+                <div class="row draw">
+                    <a href="@Url.Content("~/Agency/AccountWithdrawTables")" target="_blank">点击填写在线取款申请</a><a href="@Url.Content("~/Agency/TableDoownload")" target="_blank">点击下载表格填写取款申请</a>
+                </div><br />
+                <p>推荐填写在线取款申请，这样即安全又便捷.</p>
+                <p>2、审核取款申请</p>
+                <p>在您提交取款申请之后，我们会立即进行审核，审核无误之后就将会为您处理您的申请。</p>
+                <p>提款申请有以下几方面需要注意.</p>
+                <p style="text-indent:2em;">1） DGM不支持任何第三方取款，您所填写的取款银行账户名字必须与您的账户名字相同</p>
+                <p style="text-indent:2em;">2） 在填写申请时，请注意正确填写您的银行账号，名称，SWIFT CORAD,这些信息都可以向您要转入的当地银行索取</p>
+                <p style="text-indent:2em;">3） 所有的取款申请必须要以英文的形式来填写，若填写中文概不予以处理</p>
+                <p style="text-indent:2em;">4） 因为您的取款是通过国际电汇的方式将资金转入您指定的银行账户，所以在从您的交易账户当中扣除款项之后2-3个工作日资金会进入您指定的银行账户。</p>
+                <p style="text-indent:2em;">5） 每笔取款手续费40美元,包括银行费用和中转银行费用，如果超过40美元/笔将由DGMFX进行支付</p>
+                <p>文件提交，以下任何一种方式</p>
+                <p style="text-indent:2em;">1） 填写取款申请表，之后扫描发送电子邮件到<a href="mailto:info@dgmfx.com">info@dgmfx.com</a></p>
+                <p style="text-indent:2em;">2） 通过传真发送（我们并不推荐使用传真，因为这可能造成传输效果的不清晰，而影响您的取款）</p>
+
+            </div>
+        </div>
+    </div>
+    @{Html.RenderPartial("Foot");}
+
+</body>
+</html>

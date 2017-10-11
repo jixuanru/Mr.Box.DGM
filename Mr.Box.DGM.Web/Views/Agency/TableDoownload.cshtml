@@ -1,0 +1,110 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>表格下载</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[4]).addClass("active");
+            $(".Manage").show();
+        })
+    </script>
+    
+
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+    <div class="container mTop">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">表格下载</h3>
+            </div>
+            <div class="panel-body">
+
+
+                <p>如果您对填写表格有疑问,请与我们的在线<a href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn" target="_blank">客服联系</a>,或者发电邮致:<a href="mailto:info@dgmfx.com">info@dgmfx.com</a></p>
+                <table class="table table-striped">
+                    <tr>
+                        <th style="width:700px;"><label>名称</label></th>
+                        <th style="width:100px;"><label>类型</label></th>
+                        <th style="width:100px;"><label>模板</label></th>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label><a href="@Url.Content("~/Agency/AccountWithdrawTables")" target="_blank">在线提交开户申请</a>(推荐)</label></td>
+                        <td><a href="@Url.Content("~/Agency/AccountWithdrawTables")" target="_blank">申请</a></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label>帐户申请书(下载扫描)</label></td>
+                        <td><a href="../Upload/Software/Account_Application_cn.pdf" target="_blank">中文</a></td>
+                        <td><a href="../Upload/Software/Account_Application_en.pdf" target="_blank">英文</a></td>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label>附加帐户申请表</label></td>
+                        @*<td><a href="../Upload/Software/Additional_Account_Form.pdf" target="_blank">下载</a></td>*@
+                        <td><a href="@Url.Content("~/Agency/AccountAdditionalApplicationForm")" target="_blank">申请</a></td>
+                        <td><a href="../Upload/Software/Additional_Account_Form_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr class="Manage">
+                        <td class="DownloadFormsContentTwoTableTitle"><label> 外汇经理人申请表</label></td>
+                        <td><a href="../Upload/Software/Trader_Advisor_App.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/Trader_Advisor_App_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr class="Manage">
+                        <td class="DownloadFormsContentTwoTableTitle"><label>外汇经理人问卷调查表 </label></td>
+                        <td><a href="../Upload/Software/TA_Questionnaire.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/TA_Questionnaire_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr class="Manage">
+                        <td class="DownloadFormsContentTwoTableTitle"><label>有限授权外汇经理人委托书POA</label></td>
+                        <td><a href="../Upload/Software/Limited_Power_of_Attorney_Form.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/Limited_Power_of_Attorney_Form_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr class="Manage">
+                        <td class="DownloadFormsContentTwoTableTitle"><label>撤消有限授权外汇经理人委托书</label></td>
+                        <td><a href="../Upload/Software/Revocation_of_Limited_Power_of_Attorney.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/Revocation_of_Limited_Power_of_Attorney_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label>转帐申请表(内部/外部)</label></td>
+                        <td><a href="../Upload/Software/Universal_Transfer_Form.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/Universal_Transfer_Form_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label>提款申请表 </label></td>
+                        <td><a href="../Upload/Software/Withdrawal_Request.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/Withdrawal_Request_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label>客户信息变更表</label></td>
+                        <td><a href="../Upload/Software/update_client_info.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/update_client_info_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    <tr>
+                        <td class="DownloadFormsContentTwoTableTitle"><label>杠杆变更表 </label></td>
+                        <td><a href="../Upload/Software/Flexi_Change_Form.pdf" target="_blank">下载</a></td>
+                        <td><a href="../Upload/Software/Flexi_Change_Form_TM.pdf" target="_blank">模板</a></td>
+                    </tr>
+                    
+                </table>
+
+                <div class="row">
+                    <p>请注意：</p>
+                    <p style="text-indent:2em;margin:10px auto;">1.为了更好的查看DGM的官方表格文件，请下载最新版本的Adobe Reader软件。</p>
+                    <p style="text-indent:2em;margin:10px auto;">2.样表图片比较大，请耐心等待其完全显示，如果显示红叉，请重新刷新。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @{Html.RenderPartial("Foot");}
+</body>
+</html>

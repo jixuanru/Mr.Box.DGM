@@ -1,0 +1,113 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MT4 贴牌|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <script src="~/Scripts/js/Common.js"></script>
+    @Styles.Render("~/css")
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+
+        <section class="cnx_white">
+            <div class="container">
+                <h3 class="text-center">MT4白标服务</h3>
+                <ul class="list-unstyled">
+                    <li>与DGM携手共同发展</li>
+                    <li>一站式外汇解决方案，配合您的公司架构及目标</li>
+                    <li>采用DGM领先技术的无交易平台，直通处理（STP）技术</li>
+                    <li>分层次的后台架构，有效管控风险</li>
+                    <li>量身定制符合不同监管机构的要求及配合客户需求</li>
+                    <li>备有多语言的交易平台以供国际机构使用</li>
+                    <li>微小数据传输使加以执行更快速，更稳定</li>
+                    <li>其它功能及资源包括：市场深度，智能手机交易，新闻分析以及短讯提示</li>
+                    <li>我们拥有与各种规模的公司合作的经验，当中包括各大主要国际金融机构。</li>
+                    <li>我们负责处理合作关系的职员将乐意为您共同定制最适合客户需求的合作方案</li>
+                    <li>欢迎与我们联系，让我们携手共同发展，如贵公司有兴趣与我们协作，请填写一下资料</li>
+                </ul>
+                <img src="~/Content/image/mt4_table.png" class="img-responsive center-block" />
+                
+                <table class="table table-bordered form-group mt4-cnx">
+                    <tr>
+                        <td style="width:130px;">姓名:</td>
+                        <td colspan="2"><input type="text" id="txtName" class="form-control" placeholder="姓名" /></td>
+                    </tr>
+                    <tr>
+                        <td>公司全称:</td>
+                        <td colspan="2"><input type="text" id="txtCompanyName" class="form-control" placeholder="公司全称" /></td>
+                    </tr>
+                    <tr>
+                        <td>地址：</td>
+                        <td colspan="2"><input type="text" id="txtAddress" class="form-control" placeholder="地址" /></td>
+                    </tr>
+                    <tr>
+                        <td>邮箱:</td>
+                        <td colspan="2"><input type="text" id="txtMail" class="form-control" placeholder="邮箱" /></td>
+                    </tr>
+                    <tr>
+                        <td>电话：</td>
+                        <td colspan="2"><input type="text" id="txtPhone" class="form-control" placeholder="电话" /></td>
+                    </tr>
+                    <tr>
+                        <td>浏览：</td>
+                        <td colspan="2"><textarea id="txtContent" rows="5" class="form-control" placeholder="留言"></textarea></td>
+                    </tr>
+                    <tr id="l_submit">
+                        <td colspan="3">
+                            <button type="button" class="btn btn-success center-block" id="c_submit" onclick="submitData();">提交申请</button>
+                    </tr>
+                </table>
+
+
+                <script type="text/javascript">
+
+                    //Currenex Viking  Currenex Classic  白标计划 代理商计划
+                    function submitData() {
+                        var name = $("#txtName").val();
+                        var email = $("#txtMail").val();
+                        var phone = $("#txtPhone").val();
+                        var exp = $("#txtContent").val().trim();
+                        if (delHtmlTag(name).length === 0 || delHtmlTag(phone).length === 0 || delHtmlTag(email).length === 0 || delHtmlTag(exp).length === 0) {
+                            layer.msg('请填写姓名、电话、邮箱、留言内容!', { icon: 0 }); return;
+                        }
+                        if (!CheckMail(email)) {
+                            layer.msg('邮箱格式错误!', { icon: 2 }); return;
+                        }
+                        $.ajax({
+                            type: "POST", async: true, url: '@Url.Content("~/Product/LeaveMsg")',
+                            data: {
+                                "name": name, "company": $("#txtCompanyName").val().trim(),
+                                "email": email, "phone": phone, "exp": exp, "type": "MT4白标服务", "address": $("#txtAddress").val()
+                            }, success: function (msg) {
+                                if (msg) {
+                                    layer.msg('提交成功!请等待客服人员联系', { icon: 1 });
+                                }
+                            }
+                        });
+                    }
+
+                </script>
+            </div>
+        </section>
+
+
+        @{Html.RenderPartial("_Foot");}
+
+    </div>
+</body>
+</html>

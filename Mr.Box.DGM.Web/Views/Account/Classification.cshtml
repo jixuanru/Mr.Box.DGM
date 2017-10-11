@@ -1,0 +1,149 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>DGMFX--账户类型</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+
+    <script src="~/Scripts/icheck/icheck.min.js"></script>
+    <link href="~/Scripts/icheck/skins/square/red.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+       <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+       <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+     <![endif]-->
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("input[name='Classification']").iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+
+                increaseArea: '20%' // optional
+            });
+        });
+        $(function () {
+            LoadData();
+            $("#Prv").click(function () { window.location = '@Url.Content("~/Account/ProfessionInfo")'; })
+            $("#Next")
+                .click(function() {
+                    if (CheckChecked()) {
+                        $.ajax({
+                            type: "POST",
+                            async: true,
+                            url: '@Url.Content("~/Account/Classification")',
+                            data: {
+                                "Classification":$("input[name='Classification']:checked").val()
+                            },
+                            success: function(data) {
+                                if (data == "success") {
+                                    window.location = '@Url.Content("~/Account/Agreement")';
+                                }
+                                else { alert("提交超时，请重新提交!");}
+                            }
+                        });
+                    }
+                });
+        })
+        function CheckChecked() {
+            var str = "";
+            $("input[name='Classification']")
+                .each(function() {
+                    str += this.checked + ",";
+                });
+            if (str == "false,false,false,") {
+                bootbox.alert("请选择交易账户类型后再进行下一步操作!"); return false;
+            }
+            return true;
+        }
+
+        function LoadData() {
+            var item;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Content("~/Account/GetClassification")',
+                async: false,
+                success: function (data) {
+                    if (data != null && data != "") {
+                        item = eval(data);
+                    }
+                }
+            });
+            $("input[name='Classification'][value='" + item.AccountTradeType + "']").iCheck('check');
+        }
+    </script>
+
+
+
+    <style type="text/css">
+        .Classification {
+            color: #172025;
+            line-height: 30px;
+            margin: 30px auto 30px 30px;
+        }
+
+            .Classification p {
+                margin-bottom: 20px;
+            }
+
+                .Classification p a {
+                    color: #f60e0e;
+                    text-decoration: none;
+                }
+
+                    .Classification p a:hover {
+                        text-decoration: underline;
+                    }
+
+        label {
+            display: inline;
+        }
+        /*.agreement div input{background-color:black;text-align:center;color:#b3b3b3;width:80px;}*/
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section class="row openAccount">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12 text-center">
+                    <dl>
+                        <dt><h3>请选择你要开设的交易账户类型</h3></dt>
+                        <dd><strong style="color:red;">备注：由于交易账户类型的不同，您所享受的交易政策也将不同，请谨慎选择，谢谢您的配合！</strong></dd>
+                    </dl></div> 
+            </div>
+
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="Classification">
+                    <p><input type="radio" name="Classification" id="radio1" value="微型账户" />&nbsp;&nbsp;<label for="radio1" style="cursor:pointer">微型账户：</label><img src="~/Content/image/account_type1.png" /></p>
+                    <p><input type="radio" name="Classification" id="radio2" value="标准账户" />&nbsp;&nbsp;<label for="radio2" style="cursor:pointer">标准账户：</label><img src="~/Content/image/account_type2.png" /></p>
+                    <p><input type="radio" name="Classification" id="radio3" value="机构账户" />&nbsp;&nbsp;<label for="radio3" style="cursor:pointer">机构账户：</label><img src="~/Content/image/account_type3.png" /></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6  col-xs-6 text-right">
+                    <button type="button" class="btn btn_open text-center" id="Prv">上一步</button>
+                </div>
+                <div class="col-sm-6 col-xs-6 text-left">
+                    <button type="button" class="btn btn_open text-center" id="Next">下一步</button>
+                </div>
+            </div>
+        </section>
+
+
+
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>

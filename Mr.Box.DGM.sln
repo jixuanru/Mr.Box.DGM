@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mr.Box.DGM.Web", "Mr.Box.DGM.Web\Mr.Box.DGM.Web.csproj", "{7D756F3E-6FD4-4341-8562-0A2EE580FA24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mr.Box.DGM.Model", "Mr.Box.DGM.Model\Mr.Box.DGM.Model.csproj", "{1EF297AB-03A3-4553-AC23-06EE57A9407D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mr.Box.DGM.Common", "Mr.Box.DGM.Common\Mr.Box.DGM.Common.csproj", "{B61E801D-C2B7-4035-B18B-A92F3A4D3078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mr.Box.DGM.Log", "Mr.Box.DGM.Log\Mr.Box.DGM.Log.csproj", "{7D4FD753-0394-44B8-85F8-4E2E9E24706E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mr.Box.DGM.Dal", "Mr.Box.DGM.Dal\Mr.Box.DGM.Dal.csproj", "{AFD22396-E575-4D92-B7B5-BF1E09A3923D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mr.Box.DGM.Bll", "Mr.Box.DGM.Bll\Mr.Box.DGM.Bll.csproj", "{0F8484BD-46CC-443D-AA53-934CD1A5D71C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		测试发布|Any CPU = 测试发布|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D756F3E-6FD4-4341-8562-0A2EE580FA24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D756F3E-6FD4-4341-8562-0A2EE580FA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D756F3E-6FD4-4341-8562-0A2EE580FA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D756F3E-6FD4-4341-8562-0A2EE580FA24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D756F3E-6FD4-4341-8562-0A2EE580FA24}.测试发布|Any CPU.ActiveCfg = 测试发布|Any CPU
+		{7D756F3E-6FD4-4341-8562-0A2EE580FA24}.测试发布|Any CPU.Build.0 = 测试发布|Any CPU
+		{1EF297AB-03A3-4553-AC23-06EE57A9407D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EF297AB-03A3-4553-AC23-06EE57A9407D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EF297AB-03A3-4553-AC23-06EE57A9407D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EF297AB-03A3-4553-AC23-06EE57A9407D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EF297AB-03A3-4553-AC23-06EE57A9407D}.测试发布|Any CPU.ActiveCfg = 测试发布|Any CPU
+		{1EF297AB-03A3-4553-AC23-06EE57A9407D}.测试发布|Any CPU.Build.0 = 测试发布|Any CPU
+		{B61E801D-C2B7-4035-B18B-A92F3A4D3078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B61E801D-C2B7-4035-B18B-A92F3A4D3078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B61E801D-C2B7-4035-B18B-A92F3A4D3078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B61E801D-C2B7-4035-B18B-A92F3A4D3078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B61E801D-C2B7-4035-B18B-A92F3A4D3078}.测试发布|Any CPU.ActiveCfg = 测试发布|Any CPU
+		{B61E801D-C2B7-4035-B18B-A92F3A4D3078}.测试发布|Any CPU.Build.0 = 测试发布|Any CPU
+		{7D4FD753-0394-44B8-85F8-4E2E9E24706E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4FD753-0394-44B8-85F8-4E2E9E24706E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4FD753-0394-44B8-85F8-4E2E9E24706E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4FD753-0394-44B8-85F8-4E2E9E24706E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4FD753-0394-44B8-85F8-4E2E9E24706E}.测试发布|Any CPU.ActiveCfg = 测试发布|Any CPU
+		{7D4FD753-0394-44B8-85F8-4E2E9E24706E}.测试发布|Any CPU.Build.0 = 测试发布|Any CPU
+		{AFD22396-E575-4D92-B7B5-BF1E09A3923D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD22396-E575-4D92-B7B5-BF1E09A3923D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD22396-E575-4D92-B7B5-BF1E09A3923D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD22396-E575-4D92-B7B5-BF1E09A3923D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD22396-E575-4D92-B7B5-BF1E09A3923D}.测试发布|Any CPU.ActiveCfg = 测试发布|Any CPU
+		{AFD22396-E575-4D92-B7B5-BF1E09A3923D}.测试发布|Any CPU.Build.0 = 测试发布|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.测试发布|Any CPU.ActiveCfg = 测试发布|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.测试发布|Any CPU.Build.0 = 测试发布|Any CPU
+		{0F8484BD-46CC-443D-AA53-934CD1A5D71C}.测试发布|Any CPU.Deploy.0 = 测试发布|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

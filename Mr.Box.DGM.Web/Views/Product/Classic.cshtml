@@ -1,0 +1,58 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Currenex Classic|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section class="classic">
+            <img src="@Url.Content("~/Content/image/p_classic.jpg")" class="img-responsive center-block" />
+            <div class="classic_position row">
+                <div class="row">
+                    <div class="col-xs-9 position_1">
+                        <a href="http://www.pret.fxdnld.com/launch/dgmb2b" target="_blank"><img src="@Url.Content("~/Content/image/p_classic_login.png")" class="img-responsive" /></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-9 position_2">
+                        <a href="@Url.Content("~/Product/Currenex#table-currenex")"><img src="@Url.Content("~/Content/image/p_classic_application.png")" class="img-responsive" /></a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <section class="classic_text">
+
+            <h3>Currenex Classic 登录说明:</h3>
+            <p>
+                由于Classic登录时是基于Java网页登录，在网页登录时需要加载安装证书，为了保障客户的正常使用，请广大客户收到开户邮件后，请将邮件内的登录名、PIN及Email输入以下网址:<a href="https://pret-dl.currenex.com/enroll-pret/enroll.html" target="_blank">https://pret-dl.currenex.com/enroll-pret/enroll.html</a> 并点击网页中的 Enroll键，系统将自动加载证书，待系统加载证书完毕后，请客户点击Classic登录网页<a href="http://www.pret.fxdnld.com/launch/dgmb2b" target="_blank">http://www.pret.fxdnld.com/launch/dgmb2b</a>，进行登录。如广大客户在登录中有任何问题，欢迎随时与我们在线客服进行联系或致电客服服务热线400-895-8686进行咨询。
+            </p>
+            <p>如果您的电脑未安装java系统，请先安装java系统后登陆Classic交易平台，<a href="@Url.Content("~/UpLoad/Software/JavaSetup.exe")">点击安装java程序</a>。</p>
+            <p>如需申请Currenex Classic 模拟交易账户，请致电客服中心400-895-8686进行咨询。</p>
+
+
+
+        </section>
+
+        @{Html.RenderPartial("_Foot");}
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MT4多账户管理|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section style="margin-top:90px;">
+            <img src="@Url.Content("~/Content/image/MultipleAccounts.jpg")" class="img-responsive center-block"/>
+        </section>
+        @{Html.RenderPartial("_Foot");}
+
+    </div>
+</body>
+</html>

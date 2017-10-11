@@ -1,0 +1,168 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>开设账户详细信息</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Scripts.Render("~/bootstraptable")
+    @Styles.Render("~/css")
+    <script src="~/Scripts/js/Common.js"></script>
+    @* ReSharper disable once Html.PathError *@
+    <script type="text/javascript">
+
+        var _account, _professionInfo, _personalInformation;
+        //var dialog = frameElement.dialog; //调用页面的dialog对象(ligerui对象)
+        $(function() {
+            //var dialogData = dialog.get('data');//获取data参数
+            //var accouontId = dialogData.accountId;
+            var url = window.location.href;
+            var id = GetArgsFromHref(url, 'id');
+            GetDetails(id);
+
+        });
+        function GetDetails(id) {
+            $.ajax({
+                type: "POST",
+                async: false,
+                data: { "accountId": id },
+                url: '@Url.Content("~/Manage/GetAccountApplicationDetails")',
+                success: function() {
+                    Get_Account();
+                    Get_ProfessionInfo();
+                    Get_PersonalInformation();
+                }
+            });
+        }
+        function Get_Account() {
+            $.ajax({
+                type: "post",
+                async: true,
+                url: '@Url.Content("~/Manage/Get_Account")',
+                success: function(data) {
+                    _account = eval(data);
+                    $("#cname").text(_account.CH_Surname + _account.CH_Name);
+                    $("#ename").text(_account.EN_Surname + _account.EN_Name);
+                    $("#country").text(_account.Country);
+                    $("#agents").text(_account.Agents);
+                    $("#pwd").text(_account.AccountPassword);
+                    $("#RegDate").text(_account.RegDate);
+                    $("#email").text(_account.Email);
+
+                    $("#AccountType").text(_account.AccountType); //账户类型
+                    $("#AccountTradeType").text(_account.AccountTradeType);         //账户交易类型
+                    $("#PlatformType").text(_account.AccountBelongsPlatformType); //账户所属平台类型
+                    $("#Country").text(_account.Country); //国家
+
+                }
+            });
+        }
+        function Get_ProfessionInfo() {
+            $.ajax({
+                type: "post",
+                async: true,
+                url: '@Url.Content("~/Manage/Get_ProfessionInfo")',
+                success: function(data) {
+                    var profession = eval(data);
+                    $("#Profession").text(profession.ProfessionType); // 职业
+                    $("#IsRegulated").text(profession.IsReceiveEnglandControlWork); //是否受监管
+                    $("#EmployerName").text(profession.HirerName); // 雇主名称
+                    $("#EmployerCountry").text(profession.HirerCountry); //雇主国家
+                    $("#OwnersNature").text(profession.NatureOfBusiness); // 业主性质
+                    $("#Post").text(profession.Post); //职位
+                    $("#EmployerCity")
+                        .text(profession
+                            .HirerProvince +
+                            "|" +
+                            profession.HirerCity +
+                            "|" +
+                            profession.HirerAddress); //城市
+                    $("#TotalRevenue").text(profession.BEFOREYearRevenue); //年前收入
+                    $("#TotalInvestmen").text(profession.DepositAndInvestment); //储蓄和投资总额
+                    $("#FirstDeposit").text(profession.FastIntoCapitalMoney); //首笔入金
+                    $("#SourceOfFunds").text(profession.SourceOfFunds); //资金来源
+                }
+            });
+        }
+        function Get_PersonalInformation() {
+            $.ajax({
+                type: "post",
+                async: true,
+                url: '@Url.Content("~/Manage/Get_PersonalInformation")',
+                success: function(data) {
+                    var perinfo = eval(data);
+                    $("#Birthday").text(perinfo.Birthday); // 生日
+                    $("#Nationality").text(perinfo.Nationality); // 国籍
+                    $("#StateocumentsIssued").text(perinfo.CredentialsFromCountry); // 证件签发国
+                    $("#CredentialsType").text(perinfo.CredentialsType); // 证件类型
+                    $("#CredentialsNumber").text(perinfo.CredentialsNumber); // 证件号码
+
+
+                    $("#Address").text(perinfo.Province + "|" + perinfo.City + "|" + perinfo.LiveAddress); //地址
+                    $("#Mobile").text(perinfo.PhoneNumber); //手机
+                    $("#HomePhone").text(perinfo.HomePhone); //家庭电话
+                }
+            });
+        }
+        function Get_CurrencyType() {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Manage/Get_CurrencyType")',
+                success: function(data) {
+                    var currency = eval(data);
+                    $("#Currency").text(currency.CurrencyTypeName); //基本货币
+                }
+            });
+        }
+    </script>
+    <style type="text/css">
+        #detail {
+            width: 700px;
+            height: 500px;
+            margin: auto;
+        }
+
+            #detail table {
+                width: 99%;
+                margin: 50px auto;
+            }.text-center{font-weight:800}
+
+    </style>
+</head>
+<body>
+    <div id="detail">
+        <table class="table table-bordered">
+            <tbody>
+                <tr><td colspan="2" class="text-center">基本信息</td></tr>
+                <tr><td>姓名(中):<label id="cname"></label></td><td>姓名(拼):<label id="ename"></label></td></tr>
+                <tr><td>所属代理商:<label id="agents"></label></td><td>登录密码:<label id="pwd"></label></td></tr>
+                <tr><td>居住国家:<label id="country"></label></td><td>电子邮件:<label id="email"></label></td>@*<td>联系电话:<label id="phone"></label></td>*@</tr>
+                <tr><td>手机:<label id="Mobile"></label></td><td>家庭电话:<label id="HomePhone"></label></td></tr>
+                <tr><td colspan="2">注册时间:<label id="RegDate"></label></td></tr>
+                <tr><td colspan="2" class="text-center">账户信息</td></tr>
+                <tr><td>基本货币:<label id="Currency"></label></td><td>账户类型:<label id="AccountType"></label></td></tr>
+                <tr><td>国家:<label id="Country"></label></td><td>所属平台:<label id="PlatformType"></label></td></tr>
+                <tr><td>地址:<label id="Address"></label></td><td>交易账户类型:<label id="AccountTradeType"></label></td></tr>
+                <tr><td colspan="2" class="text-center">身份信息</td></tr>
+                <tr><td>出生日期:<label id="Birthday"></label></td><td>国籍:<label id="Nationality"></label></td></tr>
+                <tr><td>证件签发国:<label id="StateocumentsIssued"></label></td><td>证件类型:<label id="CredentialsType"></label></td></tr>
+                <tr><td>证件号码:<label id="CredentialsNumber"></label></td><td><label id=""></label></td></tr>
+                <tr><td colspan="2" class="text-center">其他信息</td></tr>
+                <tr><td>职业:<label id="Profession"></label></td><td><label id=""></label></td></tr>
+                <tr><td>雇主名称:<label id="EmployerName"></label></td><td>国家:<label id="EmployerCountry"></label></td></tr>
+                <tr><td>业主性质:<label id="OwnersNature"></label></td><td>职位:<label id="Post"></label></td></tr>
+                <tr><td colspan="2">地址:<label id="EmployerCity"></label></td></tr>
+                <tr><td>税前年收入:<label id="TotalRevenue"></label></td><td>储蓄投资总额:<label id="TotalInvestmen"></label></td></tr>
+                <tr><td>首笔入金:<label id="FirstDeposit"></label></td><td>资金来源:<label id="SourceOfFunds"></label></td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

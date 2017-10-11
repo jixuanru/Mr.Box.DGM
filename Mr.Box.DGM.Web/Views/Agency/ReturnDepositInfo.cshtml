@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>入金详情</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="@Url.Content("~/Scripts/Liger/lib/ligerUI/skins/Aqua/css/ligerui-all.css")" rel="stylesheet" />
+        @Scripts.Render("~/jsCollection")
+        <link href="~/Content/Client.css" rel="stylesheet" />
+    <script src="~/Scripts/Client.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            Init();
+        })
+    </script>
+    <style type="text/css">
+        #deposit{width:700px;margin:auto;margin-top:80px;margin-bottom:50px; line-height:35px;font-size:14px;}
+        #deposit .left{width:300px;text-align:right;}
+        #deposit .right{padding-left:50px;text-align:left;}
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+
+    <div id="deposit">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr><td class="left">商户名称</td><td class="right">@ViewBag.Mercode</td></tr>
+            <tr><td class="left">订单编号</td><td class="right">@ViewBag.Billno</td></tr>
+            <tr><td class="left">操作人姓名</td><td class="right">@ViewBag.OperatingName</td></tr>
+            <tr><td class="left">订单金额</td><td class="right">@ViewBag.Amount</td></tr>
+            <tr><td class="left">订单日期</td><td class="right">@ViewBag.Date</td></tr>
+            <tr><td class="left">成功标志</td><td class="right">@ViewBag.Succ</td></tr>
+            <tr><td class="left">IPS订单号</td><td class="right">@ViewBag.Ipsbillno</td></tr>
+            <tr><td class="left">币种</td><td class="right">@ViewBag.Currency_Type</td></tr>
+            <tr><td class="left">状态</td><td class="right">@ViewBag.ReturnDepositInfoStatus</td></tr>
+        </table>
+    </div>
+    @{Html.RenderPartial("Top");}
+</body>
+</html>

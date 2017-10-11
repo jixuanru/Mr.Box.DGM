@@ -1,0 +1,426 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>DGMFX--个人信息</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+
+    <!--[if lt IE 9]>
+       <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+       <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+     <![endif]-->
+    <link href="~/Scripts/bootstrap/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    @Scripts.Render("~/datetimepicker")
+
+    <script src="~/Scripts/js/Country.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            BindSelect("#formGroupCountry", Country);
+            BindSelect("#formGroupNation", Country);
+            $('.form_date')
+                .datetimepicker({
+                    language: 'zh-CN',
+                    weekStart: 0,
+                    todayBtn: 1,
+                    autoclose: 1,
+                    todayHighlight: 1,
+                    startView: 2,
+                    minView: 2,
+                    format: 'yyyy-mm-dd',
+                    forceParse: 0
+                });
+            LoadData();
+            $("#Pre")
+                .click(function () {
+                    window.location.href = '@Url.Content("~/Account/AccountApplication")';
+                });
+
+            $("#Next")
+                .click(function () {
+                    if (checkNull()) {
+                        SubmitData();
+                    }
+                });
+        });
+//        var isInputNull = true;
+        function checkNull() {
+            var inputText = $("input[type='text']");
+            for (var i = 0; i < inputText.length - 3; i++) {
+                if (delHtmlTag($("#" + inputText[i].id).val()) === "") {
+                    $("#" + inputText[i].id).parents(".form-group").addClass("has-error");
+                    //isInputNull = false;
+                    return false;
+                } else {
+                    $("#" + inputText[i].id).parents(".form-group").removeClass("has-error");
+                }
+            }
+            return true;
+        }
+
+    </script>
+    <style type="text/css">
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            border-top: none;
+        }
+        /*#formGroupBirth{background-color: transparent;background-image:unset;background:unset}*/
+        .dropdown-menu {
+            color: #16151a;
+        }
+
+        .paddingL {
+            padding-left: 0;
+        }
+    </style>
+    <script type="text/javascript">
+
+
+
+        //显示账户类型
+        function cheboxClick() {
+            $("input[name='Type']").each(function () {
+                $(this).change(function () {
+                    if ($(this).val() === "Currenex API") {
+                        $(".API").show();
+                    } else {
+                        $(".API").hide();
+                    }
+                });
+            });
+        }
+
+        function SubmitData() {
+            //var platformType = $("input[name='radio_pt']:checked").val();
+            //if (platformType == "Currenex API") {
+            //    platformType = platformType + "----" + $("input[name='API']:checked").val(); //机构账户类型
+            //}
+
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Account/Personal")',
+                data: {
+                    "platformType": $("input[name='radio_pt']:checked").val(),
+                    "currencyType": $("#formGroupCurrencyType").val(),
+                    "country": $("#formGroupCountry").val(),
+                    "provinces": $("#formGroupProvince").val(),
+                    "city": $("#formGroupCity").val(),
+                    "address": $("#formGroupAddress").val(),
+                    "code1": $("#formGroupPhoneCode").val(),
+                    "code2": $("#formGroupTelCode").val(),
+                    "code3": $("#formGroupTelCode2").val(),
+                    "tel1": $("#formGroupPhone").val(),
+                    "tel2": $("#formGroupTel").val(),
+                    "accountType": "个人",
+                    "international": $("#formGroupNation").val(),
+                    "birth": $("#formGroupBirth").val(),
+                    "cardType": $("#formGroupCardType").val(),
+                    "carnNum": $("#formGroupCardNo").val()
+                },
+                success: function (data) {
+                    if (data === "success") {
+                        window.location = '@Url.Content("~/Account/ProfessionInfo")';
+                    } else {
+                        alert("提交超时，请重新提交!");
+                    }
+                }
+            });
+        }
+
+        //加载缓存数据
+        function LoadData() {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Account/GetPersonal")',
+                success: function (data) {
+                    if (data != null && data != '') {
+                        var item = eval(data);
+                        $(":radio[name='radio_pt'][value='" + item.AccountBelongsPlatformType + "']").prop("checked", 'checked');
+                        $("#formGroupCountry").val(item.Country);
+                        $("#formGroupProvince").val(item.Province);
+                        $("#formGroupCity").val(item.City);
+                        $("#formGroupAddress").val(item.LiveAddress);
+                        $("#formGroupBirth").val(item.Birthday);
+                        $("#formGroupNation").val(item.Nationality);
+                        $("#formGroupCardType").val(item.CredentialsType);
+                        $("#formGroupCardNo").val(item.CredentialsNumber);
+                        $("#formGroupPhoneCode").val(item.PhoneNumber.split("-")[0]);
+                        $("#formGroupPhone").val(item.PhoneNumber.split("-")[1]);
+                        $("#formGroupTelCode").val(item.HomePhone.split("-")[0]);
+                        $("#formGroupTelCode2").val(item.HomePhone.split("-")[1]);
+                        $("#formGroupTel").val(item.HomePhone.split("-")[2]);
+                    }
+                }
+            });
+        }
+    </script>
+
+
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+        <section class="row openAccount">
+
+            <div class="col-md-8 col-md-offset-2">
+                <div class="form-horizontal">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="formGroupCurrencyType">货币基础</label>
+                                                <div class="col-sm-8">
+                                                    <div class="row">
+                                                        <select class="form-control" id="formGroupCurrencyType">
+                                                            <option value="1">USD 美元</option>
+                                                            <option value="2">GBP 英镑</option>
+                                                            <option value="3">EUR 欧元</option>
+                                                            <option value="4">JPY 日元</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">账号所属平台</label>
+                                            <div class="col-sm-10">
+                                                <div class="row">
+                                                    <div class="col-sm-3"><input type="radio" name="radio_pt" value="Meta Trader4" />Meta Trader4</div>
+                                                    <div class="col-sm-3"><input type="radio" name="radio_pt" value="Currenex Viking" />Currenex Viking</div>
+                                                    <div class="col-sm-3"><input type="radio" name="radio_pt" value="Currenex Classic" />Currenex Classic</div>
+                                                    <div class="col-sm-3"><input type="radio" name="radio_pt" value="Currenex API" />Currenex API</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">账户种类</label>
+                                            <div class="col-sm-10">
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-lg-12"><input type="radio" value="个人" checked="checked" />个人-我将是此账户的唯一所有人</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCountry">居住国家</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupCountry"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 hidden"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupProvince">居住省份</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupProvince" placeholder="省份">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCity">居住城市</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupCity" placeholder="城市">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="formGroupAddress">详细地址</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupAddress" placeholder="地址">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <label class="col-sm-4 control-label" for="formGroupBirth">出生日期</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group date form_date col-sm-12" data-date="1970-01-01" data-date-format="yyyy-MM-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                                                    <input class="form-control" id="formGroupBirth" size="15" type="text" value="" placeholder="1970-01-01">
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                </div>
+                                                <input type="hidden" id="dtp_input2" value="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupNation">国籍</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupNation"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCardType">证件类型</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupCardType">
+                                                    <option value="居民身份证">居民身份证</option>
+                                                    <option value="护照">护照</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCardNo">证件号码</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupCardNo" placeholder="证件号码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <label class="col-sm-2 control-label">手机号码</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="col-sm-6 control-label" for="formGroupPhoneCode">国家代码</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="formGroupPhoneCode" placeholder="国家代码" value="86" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label" for="formGroupPhone">号码</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="formGroupPhone" placeholder="号码" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <label class="col-sm-2 control-label">家庭电话</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="col-sm-6 control-label" for="formGroupTelCode">国家代码</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="formGroupTelCode" placeholder="国家代码" value="86" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="col-sm-6 control-label" for="formGroupTelCode2">区号</label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="formGroupTelCode2" placeholder="区号" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label" for="formGroupTel">号码</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="form-control" id="formGroupTel" placeholder="号码" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-2 col-sm-offset-4 col-xs-2 col-xs-offset-4">
+                                        <button type="button" class="btn btn_open text-center" id="Pre">上一步</button>
+                                    </div>
+                                    <div class="col-sm-2 col-xs-2">
+                                        <button type="button" class="btn btn_open text-center" id="Next">下一步</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>

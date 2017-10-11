@@ -1,0 +1,319 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>DGMFX表格管理</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Scripts.Render("~/bootstraptable")
+
+    @Styles.Render("~/AdminExcss")
+    @Styles.Render("~/css")
+
+    <style type="text/css">
+        input[type=text] {
+            margin-right: 15px;
+        }
+
+        #selectChange li a:hover {
+            cursor: pointer;
+            color:#02ad9b;
+        }
+
+        .inputIco {
+            color: #02ad9b;
+        }
+    </style>
+
+    <script src="~/Scripts/js/index.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            initTable();
+
+            $("#search")
+                .click(function () {
+                    $table.bootstrapTable('destroy');
+                    initTable();
+                });
+
+            $("#selectChange li a")
+                .click(function () {
+                    $("#selectChange").prev(".btn").html($(this).text() + "<span class='caret'></span>");
+                    $table.bootstrapTable('refresh');
+                });
+
+        });
+
+
+        function initTable() {
+            layer.load();
+            var queryUrl = '@Url.Content("~/Manage/GetTableList")' + '?rnd=' + +Math.random();
+            $table = $("#showData")
+                .bootstrapTable({
+                    columns: [
+                        {'title': '姓名','field': 'Explanation','halign':'center'},
+                        { 'title': '帐号', 'field': 'AccountName', 'halign': 'center' },
+                        { 'title': '电话', 'field': 'PhoneNumber', 'halign': 'center' },
+                        { 'title': '邮箱', 'field': 'Email', 'halign': 'center' },
+                        { 'title': '提交时间', 'field': 'CreateTime', 'halign': 'center' },
+                        { 'title': '表格类型', 'field': 'TableType', 'halign': 'center' },
+                        {
+                            'title': '操作',
+                            'field': 'ID',
+                            align: 'center',
+                            formatter: function (value, row, index) {
+                                var h = "";
+                                if (row["UpdateTime"] == "") { //表格未确认
+                                    h += "<a title='确认' href='javascript:confirm(" +
+                                        value +
+                                        ");' class='glyphicon glyphicon-ok'></a>&nbsp;&nbsp;";
+                                }
+                                h += "<a title='取消' href='javascript:remove(" +
+                                    value + "," + row["TableDetailID"] + ",\"" + row["TableDetailName"] +
+                                    "\");' class='glyphicon glyphicon-remove'></a>&nbsp;&nbsp;";
+                                h += "<a title='查看' href='javascript:details(" +
+                                    value +
+                                    ");' class='glyphicon glyphicon-list-alt'></a>";
+                                return h;
+                            }
+                        }
+                    ],
+                    rowStyle: function (row, index) {
+                        //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
+                        var strclass = "";
+                        if (row.UpdateTime === "") {
+                            strclass = 'danger';
+                        } else {
+                            return {};
+                        }
+                        return { classes: strclass }
+                    },
+                    url: queryUrl,
+                    method: 'post', //用Form接收
+                    contentType: "application/x-www-form-urlencoded", //必须的
+                    toolbar: '#toolbar',
+                    sortName: 'ID',
+                    idField: 'ID',
+                    uniqueId: 'ID',
+                    pagination: true, //showFooter: true,
+                    sortOrder: 'desc',
+                    showExport: true, //是否显示导出
+                    exportDataType: "basic",
+                    searchOnEnterKey: true,
+                    pageNumber: 1,
+                    detailView: false, //父子表
+                    showRefresh: true,
+                    sidePagination: "server", //服务端请求
+                    showToggle: true,
+                    showColumns: true,
+                    pageSize: 20,
+                    search: false, //不显示 搜索框
+                    pageList: [20, 50, 100, 500, 1000, 2000],
+                    queryParams: function (params) { return queryParamsFormatter(params) },
+                    onLoadSuccess: function (data) { layer.closeAll('loading'); },
+                    onRefresh: function (params) { layer.load(); },
+                    onPageChange: function (number, size) { layer.load(); },
+                    onLoadError: function (status) { layer.closeAll('loading'); }
+                });
+        }
+
+
+        function queryParamsFormatter(params) {
+            return {
+                pageSize: params.limit,
+                offset: params.offset,
+                search: $("#searchText").val(),// params.search,
+                sort: params.sortName,
+                order: params.sortOrder,
+                type: $("#selectChange").prev(".btn")[0].innerText
+            }
+        }
+
+        function remove(id,DetailID,DetailName) {
+            layer.load();
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Manage/RemoveTable")',
+                data: { "id": id, "DetailID": DetailID, "DetailName": DetailName },
+                success: function (msg) {
+                    layer.closeAll('loading');
+                    if (msg=="success") {
+                        $table.bootstrapTable('removeByUniqueId', id);
+                        layer.msg('删除成功!', { icon: 1 });
+                    }
+                    else if (msg == "error")
+                    {
+                        layer.msg('删除过程中发生错误，请联系技术人员!', { icon: 5 });
+                    }
+                }
+            });
+
+        }
+
+        function details(id) {
+            var row = $table.bootstrapTable('getRowByUniqueId', id);
+            var url = '@Url.Content("~/Manage/")' + row["TableDetailName"];
+            layer.open({
+                type: 2,
+                title: row["Explanation"]+'提交的【'+row["TableType"]+'】信息',
+                shadeClose: true, resize: true, moveOut: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['850px', '600px'],
+                content: url + "?id=" + id + "",
+                zIndex: layer.zIndex, //重点1
+                success: function (layero) {
+                    layer.setTop(layero); //重点2
+                }
+            });
+        }
+    </script>
+
+</head>
+<body class="sticky-header">
+
+    <section>
+        <!-- left side start-->
+        <div class="left-side sticky-left-side">
+            <!--logo and iconic logo start-->
+            <div class="logo">
+                <a href="@Url.Content("~/Manage/Index")"><img src="@Url.Content("~/Content/image/logo_admin.png")" alt="" class="img-responsive"></a>
+            </div>
+            <div class="logo-icon text-center">
+                <a href="@Url.Content("~/Manage/Index")"><img src="@Url.Content("~/Content/image/logo_ico.png")" alt="" class="img-responsive"></a>
+            </div>
+            <!--logo and iconic logo end-->
+            <div class="left-side-inner">
+
+                <!-- visible to small devices only -->
+                <div class="visible-xs hidden-sm hidden-md hidden-lg">
+                    <div class="media logged-user">
+                        <div class="media-body">
+                            <span class="login-user"></span>
+                        </div>
+                    </div>
+                    <ul class="nav nav-pills nav-stacked custom-nav">
+                        <li><a href="javascript:clearCache();"><i class="fa fa-cog"></i> <span>清除缓存</span></a></li>
+                        <li><a href="javascript:logOut();"><i class="fa fa-sign-out"></i> <span>退出登录</span></a></li>
+                    </ul>
+                </div>
+                <!--sidebar nav start-->
+
+                <ul class="nav nav-pills nav-stacked custom-nav">
+                    <li><a href="@Url.Content("~/Manage/Index")"><i class="fa fa-home"></i> <span>主页</span></a></li>
+                    <li class="menu-list">
+                        <a href=""><i class="fa fa-laptop"></i> <span>开设账户</span></a>
+                        <ul class="sub-menu-list">
+                            <li><a href="@Url.Content("~/Manage/OpenAccount")">MT4开户申请</a></li>
+                            <li><a href="@Url.Content("~/Manage/FileUpload")">上传证件管理</a></li>
+                            <li><a href="@Url.Content("~/Manage/Recycle")">回收站</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href=""><i class="fa fa-dollar"></i> <span>出入金管理</span></a>
+                        <ul class="sub-menu-list">
+                            <li><a href="@Url.Content("~/Manage/DepositAccount")">入金管理</a></li>
+                            <li><a href="@Url.Content("~/Manage/AccountWithdraw")">出金管理</a></li>
+                        </ul>
+                    </li>
+                    <li class="active"><a href="@Url.Content("~/Manage/TableList")"><i class="fa fa-table"></i> <span>表格管理</span></a></li>
+                    <li><a href="@Url.Content("~/Manage/LeaveMessage")"><i class="fa fa-file-text"></i> <span>留言联系管理</span></a></li>
+                    <li class="menu-list"><a href=""><i class="fa fa-envelope"></i> <span>新闻公告管理</span></a><ul class="sub-menu-list"><li><a href="@Url.Content("~/Manage/NewsEvents")">公告列表</a></li><li><a href="@Url.Content("~/Manage/NewsEventsAdd")">添加公告</a></li></ul></li>
+
+
+
+                    <li><a href="@Url.Content("~/Manage/Log")"><i class="fa fa-book"></i> <span>用户日志管理</span></a></li>
+
+                </ul>
+                <!--sidebar nav end-->
+
+            </div>
+        </div>
+        <!-- left side end-->
+        <!-- main content start-->
+        <div class="main-content">
+            <!-- header section start-->
+            <div class="header-section">
+                <!--toggle button start-->
+                <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+                <!--toggle button end-->
+                <label id="page-nav" class="hidden-xs">已提交表格</label>
+                <!--notification menu start -->
+                <div class="menu-right">
+                    <ul class="notification-menu">
+                        <li class="hidden-xs">
+                            <!--time start-->
+                            <label id="nowDateTimeSpan"></label>
+                            <!--time end-->
+                        </li>
+                        <li>
+                            <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="login-user"></span>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+                                <li><a href="javascript:clearCache();"><i class="fa fa-cog"></i>清除缓存</a></li>
+                                <li><a href="javascript:logOut();"><i class="fa fa-sign-out"></i>退出登录</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <!--notification menu end -->
+
+            </div>
+            <!-- header section end-->
+            <!-- page heading start-->
+            <!-- page heading end-->
+            <!--body wrapper start-->
+            <div class="wrapper">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="toolbar">
+                            <div class="input-group">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        所有表格<span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="selectChange">
+                                        <li><a>账户附加表</a></li>
+                                        <li><a>直属客户</a></li>
+                                        <li><a>所有表格</a></li>
+                                    </ul>
+                                </div>
+
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                                <input type="text" id="searchText" class="form-control" placeholder="账号/姓名" />
+                                <button type="button" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;查&nbsp;询&nbsp;</button>
+                            </div>
+
+                        </div>
+                        <table id="showData" class="table table-bordered"></table>
+                    </div>
+
+                </div>
+
+            </div>
+            <!--body wrapper end-->
+            <!--footer section start-->
+            <footer class="text-left">
+                &copy; 2016 <a href="https://cn.dgmfx.com" target="_blank">cn.dgmfx.com.</a> All rights reserved.
+            </footer>
+            <!--footer section end-->
+        </div>
+        <!-- main content end-->
+    </section>
+    @Scripts.Render("~/AdminExjs")
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" /><meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Scripts/Liger/lib/ligerUI/skins/Aqua/css/ligerui-all.css")" rel="stylesheet" />
+    @Scripts.Render("~/jsCollection")
+    <script type="text/javascript">
+        function IsLogin() {
+            $.ajax({
+                type: "POST", async: false, url: '@Url.Content("~/Client/GetUserLogin")',
+                success: function (data) {
+                    if (data == "no") {
+                        $.ligerDialog.warn("登录凭证已过期,请重新登录!");
+                        setTimeout(function () {
+                            window.location = '@Url.Content("~/Client/Login")';
+                        }, 3000);
+                    } else {
+                        $("#loginName").text(data);
+                    }
+                }
+            })
+        }
+        function LoginOut() {
+            $.ajax({
+                type: "post", async: true, url: '@Url.Content("~/Client/LoginOut")',
+                success: function () {
+                    var wait = $.ligerDialog.success("退出成功,正在跳转...");
+                    setTimeout(function () {
+                        wait.close();
+                        window.location = '@Url.Content("~/Home/Index")';
+                    }, 3000);
+                }
+            })
+        }
+        function CreateExcel() {
+            //var wait2 = $.ligerDialog.wait("正在生成最新隔夜利息表,请等待...")
+            $.ajax({
+                type: "POST", async: false, url: '@Url.Content("~/Client/GetInterest")',
+                success: function (data) {
+                    if (data=="success") {
+                       // wait2.close();
+                        $.ligerDialog.success("生成成功!");
+                    }
+                }
+            })
+        }
+
+        function openwin(url, windowName) {//openwin("../UpLoad/Interest/DownLoad/隔夜利息.xls", "隔夜利息")
+            window.open(url, windowName, "height=100, width=400, toolbar =no, menubar=no, scrollbars=no, resizable=no, location=no, status=no"); //写成一行
+        }
+    </script>
+    <style type="text/css">
+        body {
+            width: 1024px;
+            margin: auto;
+            font-family: '微软雅黑';
+        }
+
+        #Agents_ment {
+            margin: auto;
+            margin-top: 10px;
+            width: 500px;
+            font-size: 16px;
+            height: 30px;
+        }
+
+            #Agents_ment ul li {
+                float: left;
+                list-style: none;
+                width: 100px;
+            }
+
+                #Agents_ment ul li:hover {
+                    cursor: pointer;
+                }
+
+        .login {
+            width: 100%;
+            height: 30px;
+            padding-top: 10px;
+            text-align: right;
+        }
+
+            .login label {
+                text-align: right;
+                margin-right: 50px;
+            }
+
+        #loginOut:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body onload="IsLogin();">
+    <div>
+        <div style="height:100px;">
+            @*border:1px solid #d3deef;*@
+            @RenderSection("TOP", required: false)
+
+            <section>
+                <div class="login"><label id="loginName"></label><label id="loginOut" onclick="LoginOut();">退出</label></div>
+                <div id="Agents_ment">
+                    <ul>
+                        <li onclick="window.location='@Url.Content("~/Client/Index")'">首页</li>
+                        <li onclick="window.location='@Url.Content("~/Client/AccountStatistics")'">账户统计</li>
+                        <li onclick="window.location='@Url.Content("~/Client/Orders")'">订单查询</li>
+                        <li onclick="window.location='@Url.Content("~/Account/AccountDepoist")'">账户入金</li>
+                        <li onclick="window.location='@Url.Content("~/Account/AccountWithdraw")'">账户出金</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div>
+
+            @RenderSection("CENTER")
+
+
+        </div>
+        <div style="height:30px; width:100%; margin-top:15px;">
+            @RenderSection("BOTTOM", required: false)
+            <section>
+                <a style="margin-right:30px;" href="javascript:CreateExcel();">点击生成最新隔夜利息</a><a href="javascript:openwin('../UpLoad/Interest/DownLoad/隔夜利息.xls', '隔夜利息')" target="_blank" >下载隔夜利息</a>
+            </section>
+        </div>
+    </div>
+
+
+</body>
+</html>

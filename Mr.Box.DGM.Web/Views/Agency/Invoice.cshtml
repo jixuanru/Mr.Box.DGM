@@ -1,0 +1,226 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Invoice</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Styles.Render("~/ligerCss")
+    @Scripts.Render("~/ligerCollection")
+    <link href="~/Content/Client.css" rel="stylesheet" />
+    <script type="text/javascript">
+    var sTime; var eTime; var proData; var PaymentStatusData; var grid, manager;
+    $(function () {
+        GetDateInitValue();
+        Init();
+        $("#btn_OK").ligerButton({
+            width: 150, click: function () {
+                $.ajax({
+                    type: "POST", async: true, url: '@Url.Content("~/Agency/GetProjectListByDate")',
+                    data: { "startDate": $("#startTime").val(), "endDate": $("#endTime").val() },
+                    success: function (data) {
+                        proData = eval(data);
+                        proData = { Rows: proData };
+                        manager = grid = $("#projData").ligerGrid({
+                            columns: [
+                                { display: '项目类型', name: 'AgencyItemName', align: 'center', minWidth: 80, width: 150 },
+                                { display: '项目名称', name: 'ProjectName', minWidth: 80, align: 'center', width: 170 },
+                                { display: '项目联系人', name: 'AgencyUserName', minWidth: 80, align: 'center', width: 120 },
+                                { display: '付款周期', name: 'PaymentCycle', minWidth: 80, align: 'center', width: 100 },
+                                { display: '截止日期', name: 'PaymentDate', minWidth: 80, align: 'center', width: 120 },
+                                { display: '应付款总额', name: 'Summary', minWidth: 80, align: 'center', width: 100 },
+                                {
+                                    display: '附件', name: 'AccessoryName', width: 190,
+                                    render: function (rowdata, rowindex, value) {
+                                        var hh = "";
+                                        if (!rowdata._editing) {
+                                            hh += "<a href='../" + rowdata.AccessoryName + "' target='_blank'>" + rowdata.AccessoryName + "</a>"
+                                        } else {
+                                            hh += "<a href='javascript:UpLoad()'>点击上传附件</a>";
+                                        }
+                                        return hh;
+                                    }
+                                },
+                                {
+                                    display: '付款状态', name: 'PaymentStatus', minWidth: 80,
+                                    render: function (rowdata, rowindex, value) {
+                                        var sta = "";
+                                        if (rowdata.PaymentStatus == "Paid") {
+                                            sta += "已付款";
+                                        } else {
+                                            sta += "未付款";
+                                        }
+                                        return sta;
+                                    }
+                                }
+                            ], pageSize: 20, where: f_getWhere(),
+                            enabledEdit: true, clickToEdit: false, isScroll: false,
+                            data: $.extend(true, {}, proData),
+                            width: '99%', height: '500'
+                        });
+                    }
+                })
+            }
+        })
+        getData();
+    })
+    function getData() {
+        $.ajax({
+            type: "POST", async: true, url: '@Url.Content("~/Agency/GetProjCost")',
+                data:{"paymentStatus":"0"},
+                success: function (data) {
+                    proData = eval(data);
+                    proData = { Rows: proData };
+                    manager = grid = $("#projData").ligerGrid({
+                        columns: [
+                            { display: '项目类型', name: 'AgencyItemName', align: 'center', minWidth: 80, width: 150 },
+                            { display: '项目名称', name: 'ProjectName', minWidth: 80, align: 'center', width: 170 },
+                            { display: '项目联系人', name: 'AgencyUserName', minWidth: 80, align: 'center', width: 120 },
+                            { display: '付款周期', name: 'PaymentCycle', minWidth: 80, align: 'center', width: 100 },
+                            { display: '截止日期', name: 'PaymentDate', minWidth: 80, align: 'center', width: 120 },
+                            { display: '应付款总额', name: 'Summary', minWidth: 80, align: 'center', width: 100 },
+                            {
+                                display: '附件', name: 'AccessoryName', width: 190,
+                                render: function (rowdata, rowindex, value) {
+                                    var hh = "";
+                                    if (!rowdata._editing) {
+                                        hh += "<a href='../" + rowdata.AccessoryName + "' target='_blank'>" + rowdata.AccessoryName + "</a>"
+                                    } else {
+                                        hh += "<a href='javascript:UpLoad()'>点击上传附件</a>";
+                                    }
+                                    return hh;
+                                }
+                            },
+                            {
+                                display: '付款状态', name: 'PaymentStatus', minWidth: 80,
+                                render: function (rowdata, rowindex, value) {
+                                    var sta = "";
+                                    if (rowdata.PaymentStatus=="Paid") {
+                                        sta += "已付款";
+                                    } else {
+                                        sta += "未付款";
+                                    }
+                                    return sta;
+                                }
+                            }
+                        ], pageSize: 20,where : f_getWhere(),
+                        enabledEdit: true, clickToEdit: false, isScroll: false,
+                        data: $.extend(true, {}, proData),
+                        width: '99%', height: '500'
+                    });
+                }
+            })
+        }
+
+        function Init() {
+            $(".Middle").css("width", "900px").css("height", "550px").css("margin-top", "60px");
+            $("#startTime").ligerDateEditor({ showTime: true, initValue: sTime, width: 150 });
+            $("#endTime").ligerDateEditor({ showTime: true, initValue: eTime, width: 150 });
+            $("#projData").ligerGrid({});
+            PaymentStatusData = [{id:"All",text:"全部"},{ id: "Paid", text: "已付款" }, { id: "Unpaid", text: "未付款" }];
+            $("#PaymentStatus").ligerComboBox({
+                data: PaymentStatusData, valueFieldID: '_PayStatus',
+                onSelected: function (newvalue) {
+                    if (newvalue == "Paid" || newvalue == "Unpaid"||newvalue=="All") {
+                        f_search();
+                    }
+                }
+            })
+
+            //判断用户是否登录
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Agency/GetLogin")',
+                success: function (data) {
+                    if (data != "no") {
+                        var item = data.split("#");
+                        $(".userName").text(item[0]);
+                    } else {
+                        var manager = $.ligerDialog.waitting('登录凭证已过期,正在返回重新登录...');
+                        setTimeout(function () {
+                            manager.close();
+                            window.location = "@Url.Content("~/home/index#account")";
+                        }, 3000);
+                    }
+                }
+            });
+
+            //关注我们二维码
+            $("#about").mouseover(function () {
+                $("#aboutus").css("left", "550px").css("top", "0px").show();
+            }).mouseout(function () {
+                $("#aboutus").hide();
+            });
+
+            //退出登录
+            $(".loginout").click(function () {
+                $.ajax({
+                    type: "POST", async: true, url: '@Url.Content("~/Agency/LoginOut")',
+                success: function () {
+                    var wwaite = $.ligerDialog.waitting('您已退出登录,页面跳转中...');
+                    setTimeout(function () {
+                        wwaite.close();
+                        window.location = "@Url.Content("~/Home/Index")";
+                    }, 3000);
+                }
+            });
+        });
+    }
+    function GetDateInitValue() {
+        var myDate = new Date();
+        var D_Year = myDate.getFullYear() + ""; //获取完整的年份(4位,1970-????)
+        var D_Month = myDate.getMonth() + 1;  //获取当前月份(0-11,0代表1月)
+        var D_Day = myDate.getDate(); //获取当前日(1-31)
+        var D_Hours = myDate.getHours(); //获取当前小时数(0-23)
+        var D_Minutes = myDate.getMinutes(); //获取当前分钟数(0-59)
+        var D_Seconds = myDate.getSeconds();     //获取当前秒数(0-59)
+        //var D_Milliseconds = myDate.getMilliseconds();    //获取当前毫秒数(0-999)
+        sTime= D_Year + "-" + (D_Month < 10 ? "0" + D_Month : D_Month) + "-01" + " 00:00";
+        eTime = D_Year + "-" + (D_Month < 10 ? "0" + D_Month : D_Month) + "-" + (D_Day < 10 ? "0" + D_Day : D_Day) + " 00:00";
+    }
+
+    function f_search() {
+        grid.options.data = $.extend(true, {}, proData);
+        grid.loadData(f_getWhere());
+    }
+    function f_getWhere() {
+        if (!grid) return null;
+        var clause = function (rowdata, rowindex) {
+            var key = $("#_PayStatus").val();
+            if (key=="All") {
+                return rowdata;
+            }
+            return rowdata.PaymentStatus.indexOf(key) > -1;
+        };
+        return clause;
+    }
+
+
+    </script>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="Middle">
+        <div style="height:40px;width:835px;margin:auto;">
+            <table>
+                <tr>
+                    <td style="width:60px;">开始时间</td>
+                    <td><input type="text" id="startTime" /></td>
+                    <td style="width:60px;padding-left:15px;">结束时间</td>
+                    <td><input type="text" id="endTime" /></td>
+                    <td style="width:60px;padding-left:15px;">付款状态</td>
+                    <td><input type="text" id="PaymentStatus" /></td>
+                    <td style="padding-left:15px;"><input type="button" id="btn_OK" value="查询此时段的Invoice" /></td>
+                </tr>
+            </table>
+        </div>
+            <div id="projData"></div>
+    </div>
+    @{Html.RenderPartial("Foot");}
+</body>
+</html>

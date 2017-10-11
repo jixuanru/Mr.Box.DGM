@@ -1,0 +1,165 @@
+﻿<nav class="navbar navbar-fixed-top navbar-default">
+    <div class="container topcontainer">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span class="hidden-sm"><img src="~/Content/images/logo.png" class="img-responsive" /></span>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="@Url.Content("~/Agency/AccountInfo")">账户信息</a></li>
+                <li><a href="@Url.Content("~/Agency/Orders")">订单查询</a></li>
+                <li><a href="@Url.Content("~/Agency/AccountDepoist")">账户入金</a></li>
+                <li><a href="@Url.Content("~/Agency/AccountWithdraw")">账户出金</a></li>
+                <li><a href="@Url.Content("~/Agency/TableDoownload")">表格下载</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right top-nav hidden-xs">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle NAME" style="width:170px; background-color:white;color:#02ad9b; overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="@Url.Content("~/Agency/Logs")"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;用户日志</a></li>
+                        <li role="separator" class="divider"></li>
+                        @*<li><a href="@Url.Content("~/Fund/Index")"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;投资理财</a></li>
+                        <li role="separator" class="divider"></li>*@
+                        <li><a href="#" id="logout"><span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp;&nbsp;退出登陆</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-----弹出窗------->
+<div class="modal fade" id="modal_login" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" id="reLoginclose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">@*&times;*@</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-1"><div class="modal_loginico"></div></div>
+                        <div class="col-xs-10"><span class="modal_login_Con">您的身份验证已过期，请重新登录！</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="reLogin" class="btn btn-success">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-----进度条------->
+<div class="modal fade" id="modal_progress" role="dialog" tabindex="-1"
+     aria-labelledby="gridSystemModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @*<span style="text-align:center;color:red">正在查询中,请稍后!</span><br />*@
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    加载中...
+                </div>
+            </div>
+            @*<div class="progress progress-striped active">
+                    <div class="bar">
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+
+<style type="text/css">
+    .navbar {
+        background-color: #02ad9b;
+        border-bottom: 1px solid gray;
+    }
+
+    .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+        transition: all 0.3s ease 0;
+        -webkit-transition: all 0.3s ease 0.3s;
+        color: #02ad9b;
+    }
+
+    .navbar-default .navbar-nav > li > a {
+        font-weight: 400;
+        color: white;
+        border-radius: 30px;
+        -webkit-border-radius: 30px;
+    }
+
+        .navbar-default .navbar-nav > li > a:hover {
+            background-color: white;
+            color: #02ad9b;
+            transition: all 0.3s ease 0;
+            -webkit-transition: all 0.3s ease 0.3s;
+        }
+
+    .topcontainer {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .navbar-nav > li > a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin-top: 10px;
+    }
+    .navbar-nav>li>.dropdown-menu {
+    margin-top: 22px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+    .dropdown-menu li a:hover {
+        color: #02ad9b;
+    }
+
+    #modal_login {
+        z-index: 9999;
+    }
+    .modal_loginico{background:url('../../Content/images/dialog-icons.gif') 0 -96px no-repeat;width:48px;height:48px;border:0;}
+    .modal_login_Con{margin-top: 15px;display: block;}
+    .mTop {
+        margin-top: 120px;
+    }
+
+    .modal {
+        top: 30%;
+    }
+
+    .progress {
+        height: 20px;
+        margin-bottom: 0;
+        overflow: hidden;
+        border-radius: 100px;
+    }
+
+    #modal_progress .modal-content {
+        height: 20px;
+        background-color: transparent;
+        border: none;
+    }
+</style>
+<script src="@Url.Content("~/Scripts/js/Client.js")"></script>
+<link href="@Url.Content("~/Content/css/Client.css")" rel="stylesheet" />
+<script type="text/javascript">
+    $(function() {
+        Init();
+        $("#reLogin")
+            .click(function() {
+                $("#modal_login").modal('hide');
+                window.location.href = "@Url.Content("~/home/index#account")";
+            });
+
+    });
+</script>

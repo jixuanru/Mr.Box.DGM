@@ -1,0 +1,150 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AccountWithdrawalsInfo</title>
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Scripts.Render("~/bootstraptable")
+    @Styles.Render("~/css")
+    <script src="~/Scripts/js/Common.js"></script>
+    <script type="text/javascript">
+
+        $(function() {
+            var url = window.location.href;
+            var id = GetArgsFromHref(url, 'id');
+
+            GetWithdrawls(id);
+
+        });
+
+        function GetWithdrawls(withdrawlsId) {
+            $.ajax({
+                type: "POST",
+                async: true,
+                data: { "withdrawlsId": withdrawlsId },
+                url: '@Url.Content("~/Manage/GetWithdrawls")',
+                success: function(accountWithdrawals) {
+                    $("#WithdrawalsPeople").text(accountWithdrawals.WithdrawalsAccountHolder); // 取款人
+                    $("#WithdrawalsPeopleName").text(accountWithdrawals.WithdrawalsAccountHolder); // 账户持有人姓名
+                    $("#WithdrawalsPeopleAccount").text(accountWithdrawals.WithdrawalsAccount); // 交易账号
+                    $("#Email").text(accountWithdrawals.WithdrawalsEmail); //电子邮箱
+                    $("#Phone").text(accountWithdrawals.Phone); // 联系电话
+                    $("#Address")
+                        .text(accountWithdrawals.WithdrawalsProvince +
+                            "|" +
+                            accountWithdrawals.WithdrawalsCity +
+                            "|" +
+                            accountWithdrawals.WithdrawalsAddress); // 地址
+
+                    $("#ZipCode").text(accountWithdrawals.WithdrawalsCityZipCode); // 邮政编码
+                    $("#Country").text(accountWithdrawals.WithdrawalsCountry); // 国家
+                    $("#WithdrawalAmount").text(accountWithdrawals.Money); // 取款金额
+                    $("#Platform").text(accountWithdrawals.BelongsPlatform); // 平台
+
+
+                    var isCloseAccount = accountWithdrawals.IsCloseAccount;
+                    if (isCloseAccount === "false" || isCloseAccount === "False" || isCloseAccount === false) {
+                        $(".CloseAccount").hide();
+                    } else {
+                        $(".CloseAccount").show();
+                        $("#WhyClose").text(accountWithdrawals.CloseReason); // 为什么想要关闭账户
+                    }
+                    $("#IsCloseAccount")
+                        .text(isCloseAccount === "false" || isCloseAccount === "False" || isCloseAccount === false
+                            ? '否'
+                            : '是'); // 是否关闭账户
+
+                    $("#BankName").text(accountWithdrawals.BankName); // 银行名称
+                    $("#BankAccount").text(accountWithdrawals.BankAccount); // 银行账号
+                    $("#BankHolderName").text(accountWithdrawals.BankHolder); // 银行持有人姓名
+                    $("#SWIFTCode").text(accountWithdrawals.SWIFT_Code); // 国际银行代码
+                    $("#BankAddress")
+                        .text(accountWithdrawals.BankProvince +
+                            "|" +
+                            accountWithdrawals.BankCity +
+                            "|" +
+                            accountWithdrawals.BankAddress); // 银行地址
+
+                    $("#BankZipCode").text(accountWithdrawals.BankCityZipCode); // 邮编
+                    $("#BankCountry").text(accountWithdrawals.BankCountry); // 国家
+                    var isTransitBank = accountWithdrawals.IsTransitBank;
+                    $("#IsTransitBank")
+                        .text(isTransitBank === "False" || isTransitBank === "false" || isTransitBank === false
+                            ? '否'
+                            : '是');
+                    if (isTransitBank === "False" || isTransitBank === "false" || isTransitBank === false) {
+                        $(".Transit").hide();
+                    } else {
+                        $(".Transit").show();
+                        $("#TransitBankName").text(accountWithdrawals.TransitBankName); //中转银行名称
+                        $("#TransitBankAccount").text(accountWithdrawals.TransitBankAccount); //中转银行账号
+                        $("#TransitBankHolder").text(accountWithdrawals.TransitBankHolder); //账户持有人姓名
+                        $("#TransitBankSWIFT").text(accountWithdrawals.TransitBankSWIFICode); //  SWIFT Code(非常重要)
+                        $("#TransitBankCountry").text(accountWithdrawals.TransitBankCountry); //中转银行国家
+                        $("#TransitBankProvince").text(accountWithdrawals.TransitBankProvince); //中转银行州/省
+                        $("#TransitBankCity").text(accountWithdrawals.TransitBankCity); //中转银行城市
+                        $("#TransitBankZipCode").text(accountWithdrawals.TransitBankCityZipCode); //中转银行邮编
+                        $("#TransitBankAddress").text(accountWithdrawals.TransitBankAddress); //中转银行地址
+                    }
+
+
+                    $("#MainAccountHolder").text(accountWithdrawals.MainAccountName); // 主要账户持有人
+
+                }
+            });
+        }
+    </script>
+    <style type="text/css">
+        .withdral {
+            width: 550px;
+            height: 500px;
+            margin: auto;
+        }
+         .withdral .table {
+                width: 99%;
+                margin: 50px auto;
+            }.text-center{font-weight:800}
+            
+    </style>
+</head>
+<body>
+    <div class="withdral">
+        <table class="table table-bordered">
+            <tr><td colspan="2" class="text-center">账户信息</td></tr>
+            <tr><td>账户持有人姓名:<label id="WithdrawalsPeopleName"></label></td><td>交易账号:<label id="WithdrawalsPeopleAccount"></label></td></tr>
+            <tr><td>联系电话:<label id="Phone"></label></td><td>电子邮箱:<label id="Email"></label></td></tr>
+            <tr><td>国家:<label id="Country"></label></td><td>邮编:<label id="ZipCode"></label></td></tr>
+            <tr><td colspan="2">地址:<label id="Address"></label></td></tr>
+            <tr><td>取款金额$USD:<label id="WithdrawalAmount"></label></td><td>平台:<label id="Platform"></label></td></tr>
+            <tr><td colspan="2">是否要关闭交易账户:<label id="IsCloseAccount"></label></td></tr>
+            <tr class="CloseAccount"><td>关闭原因:<label id="WhyClose"></label></td></tr>
+            <tr><td colspan="2" class="text-center">银行信息</td></tr>
+
+            <tr><td>银行名称:<label id="BankName"></label></td><td>银行账号:<label id="BankAccount"></label></td></tr>
+            <tr><td>账户持有人姓名:<label id="BankHolderName"></label></td><td>SWIFT Code:<label id="SWIFTCode"></label></td></tr>
+            <tr><td colspan="2">银行地址:<label id="BankAddress"></label></td></tr>
+            <tr><td colspan="2">邮编:<label id="BankZipCode"></label></td></tr>
+            <tr><td colspan="2" class="text-center">中转银行</td></tr>
+            <tr><td colspan="2">是否有中转银行<label id="IsTransitBank"></label></td></tr>
+            <tr>
+                <td colspan="2">
+                    <table class="Transit">
+                        <tr><td>中转银行名称<label id="TransitBankName"></label></td><td>中转银行账号<label id="TransitBankAccount"></label></td></tr>
+                        <tr><td>账户持有人姓名<label id="TransitBankHolder"></label></td><td>SWIFT Code<label id="TransitBankSWIFT"></label></td></tr>
+                        <tr><td>中转银行国家<label id="TransitBankCountry"></label></td><td>中转银行邮编<label id="TransitBankZipCode"></label></td></tr>
+                        <tr><td>中转银行地址<label id="TransitBankAddress"></label></td></tr>
+                    </table>
+                </td>
+
+            </tr>
+            <tr><td colspan="2">主要账户持有人姓名<label id="MainAccountHolder"></label></td></tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,299 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>DGMFX客户管理</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Scripts.Render("~/bootstraptable")
+
+
+    <link href="@Url.Content("~/Scripts/bootstrap/datetimepicker/date/daterangepicker-bs3.css")" rel="stylesheet" />
+    @Scripts.Render("~/datetimepicker2")
+    @Styles.Render("~/AdminExcss")
+    @Styles.Render("~/css")
+
+
+    <script src="~/Scripts/js/index.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#reservation').daterangepicker(null, function (start, end, label) {
+                //alert(start); alert(end);
+                //console.log(start.toISOString(), end.toISOString(), label);
+            });
+            $(".cancelBtn")
+                .click(function () {
+                    $('#reservation').val("");
+                });
+
+        });
+
+        $(function() {
+            initTable();
+
+            $("#search")
+                .click(function() {
+                    $table.bootstrapTable('destroy');
+                    initTable();
+                });
+        });
+
+
+        function initTable() {
+            layer.load();
+            var queryUrl = '@Url.Content("~/Manage/GetLeaveMessage")' + '?rnd=' + +Math.random();
+            $table = $("#showData")
+                .bootstrapTable({
+                    columns: [
+                        { 'title': '姓名', 'field': 'Name' },
+                        { 'title': '公司名称', 'field': 'Company' },
+                        { 'title': '电话', 'field': 'Phone' },
+                        { 'title': '电邮', 'field': 'Email' },
+                        { 'title': '地址', 'field': 'Address' },
+                        { 'title': '申请时间', 'field': 'LeaveDate' },
+                        {
+                            'title': '操作',
+                            'field': 'LeaveMessageId',
+                            'align': 'center',
+                            formatter: function(value, row, index) {
+                                var h = "<a title='详细留言' href='javascript:details(" +
+                                    value +
+                                    ")' class='glyphicon glyphicon-list-alt'></a>&nbsp;&nbsp;";
+                                if (row["IsEnable"] === "未处理") {
+                                    h += "<a title='已处理' href='javascript:edit(" +
+                                        value +
+                                        ")' class='glyphicon glyphicon-ok'></a>&nbsp;&nbsp;";
+                                }
+                                h += "<a title='删除' href='javascript:remove(" +
+                                    value +
+                                    ");' class='glyphicon glyphicon-remove'></a>&nbsp;&nbsp;";
+                                return h;
+                            }
+                        }
+                    ],
+                    url: queryUrl,
+                    method: 'post', //用Form接收
+                    contentType: "application/x-www-form-urlencoded", //必须的
+                    toolbar: '#toolbar',
+                    sortName: 'LeaveMessageId',
+                    idField: 'LeaveMessageId',
+                    uniqueId: 'LeaveMessageId',
+                    pagination: true, //showFooter: true,
+                    sortOrder: 'desc',
+                    showExport: true, //是否显示导出
+                    exportDataType: "basic",
+                    searchOnEnterKey: true,
+                    pageNumber: 1,
+                    detailView: false, //父子表
+                    showRefresh: true,
+                    sidePagination: "server", //服务端请求
+                    showToggle: true,
+                    showColumns: true,
+                    pageSize: 20,
+                    search: false, //不显示 搜索框
+                    pageList: [20, 50, 100, 500, 1000, 2000],
+                    queryParams: function(params) { return queryParamsFormatter(params) },
+                    onLoadSuccess: function(data) { layer.closeAll('loading'); },
+                    onRefresh: function(params) { layer.load(); },
+                    onPageChange: function(number, size) { layer.load(); },
+                    onLoadError: function(status) { layer.closeAll('loading'); }
+                });
+        }
+
+
+        function queryParamsFormatter(params) {
+            return {
+                pageSize: params.limit,
+                offset: params.offset,
+                search: params.search,
+                sort: params.sortName,
+                order: params.sortOrder,
+                dateTime: $('#reservation').val()
+            }
+        }
+
+        function remove(id) {
+            layer.load();
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Manage/DeleteMsg")',
+                data: { "id": id },
+                success: function(msg) {
+                    if (msg === "success") {
+                        layer.closeAll('loading');
+                        $table.bootstrapTable('removeByUniqueId', id);
+                        layer.msg('操作成功!', { icon: 1 });
+                    }
+                }
+            });
+
+        }
+        function details(id)
+        {
+            var row = $table.bootstrapTable('getRowByUniqueId', id);
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['420px', '240px'], //宽高
+                content: row["MessageContent"]
+            });
+        }
+
+        function edit(id)
+        {
+            layer.load();
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Manage/UpdateMsgState")',
+                data: { "id": id },
+                success: function(msg) {
+                    if (msg === "success") {
+                        layer.closeAll('loading');
+                        $table.bootstrapTable('updateByUniqueId',
+                        {
+                            id: id,
+                            row: {
+                                IsEnable: "已处理"
+                            }
+                        });
+                        layer.msg('操作成功!', { icon: 1 });
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body class="sticky-header">
+
+    <section>
+        <!-- left side start-->
+        <div class="left-side sticky-left-side">
+            <!--logo and iconic logo start-->
+            <div class="logo">
+                <a href="@Url.Content("~/Manage/Index")"><img src="@Url.Content("~/Content/image/logo_admin.png")" alt="" class="img-responsive"></a>
+            </div>
+            <div class="logo-icon text-center">
+                <a href="@Url.Content("~/Manage/Index")"><img src="@Url.Content("~/Content/image/logo_ico.png")" alt="" class="img-responsive"></a>
+            </div>
+            <!--logo and iconic logo end-->
+            <div class="left-side-inner">
+
+                <!-- visible to small devices only -->
+                <div class="visible-xs hidden-sm hidden-md hidden-lg">
+                    <div class="media logged-user">
+                        <div class="media-body">
+                            <span class="login-user"></span>
+                        </div>
+                    </div>
+                    <ul class="nav nav-pills nav-stacked custom-nav">
+                        <li><a href="javascript:clearCache();"><i class="fa fa-cog"></i> <span>清除缓存</span></a></li>
+                        <li><a href="javascript:logOut();"><i class="fa fa-sign-out"></i> <span>退出登录</span></a></li>
+                    </ul>
+                </div>
+                <!--sidebar nav start-->
+
+                <ul class="nav nav-pills nav-stacked custom-nav">
+                    <li><a href="@Url.Content("~/Manage/Index")"><i class="fa fa-home"></i> <span>主页</span></a></li>
+                    <li class="menu-list">
+                        <a href=""><i class="fa fa-laptop"></i> <span>开设账户</span></a>
+                        <ul class="sub-menu-list">
+                            <li><a href="@Url.Content("~/Manage/OpenAccount")">MT4开户申请</a></li>
+                            <li><a href="@Url.Content("~/Manage/FileUpload")">上传证件管理</a></li>
+                            <li><a href="@Url.Content("~/Manage/Recycle")">回收站</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-list">
+                        <a href=""><i class="fa fa-dollar"></i> <span>出入金管理</span></a>
+                        <ul class="sub-menu-list">
+                            <li><a href="@Url.Content("~/Manage/DepositAccount")">入金管理</a></li>
+                            <li><a href="@Url.Content("~/Manage/AccountWithdraw")">出金管理</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="@Url.Content("~/Manage/TableList")"><i class="fa fa-table"></i> <span>表格管理</span></a></li>
+                    <li class="active"><a href="@Url.Content("~/Manage/LeaveMessage")"><i class="fa fa-file-text"></i> <span>留言联系管理</span></a></li>
+                    <li class="menu-list"><a href=""><i class="fa fa-envelope"></i> <span>新闻公告管理</span></a><ul class="sub-menu-list"><li><a href="@Url.Content("~/Manage/NewsEvents")">公告列表</a></li><li><a href="@Url.Content("~/Manage/NewsEventsAdd")">添加公告</a></li></ul></li>
+                    <li><a href="@Url.Content("~/Manage/Log")"><i class="fa fa-book"></i> <span>用户日志管理</span></a></li>
+                    
+                </ul>
+                <!--sidebar nav end-->
+
+            </div>
+        </div>
+        <!-- left side end-->
+        <!-- main content start-->
+        <div class="main-content">
+            <!-- header section start-->
+            <div class="header-section">
+                <!--toggle button start-->
+                <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+                <!--toggle button end-->
+                <label id="page-nav" class="hidden-xs">留言联系管理</label>
+                <!--notification menu start -->
+                <div class="menu-right">
+                    <ul class="notification-menu">
+                        <li class="hidden-xs">
+                            <!--time start-->
+                            <label id="nowDateTimeSpan"></label>
+                            <!--time end-->
+                        </li>
+                        <li>
+                            <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="login-user"></span>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+                                <li><a href="javascript:clearCache();"><i class="fa fa-cog"></i>清除缓存</a></li>
+                                <li><a href="javascript:logOut();"><i class="fa fa-sign-out"></i>退出登录</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <!--notification menu end -->
+
+            </div>
+            <!-- header section end-->
+            <!-- page heading start-->
+            <!-- page heading end-->
+            <!--body wrapper start-->
+            <div class="wrapper">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="toolbar">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                <input type="text" name="reservation" id="reservation" class="form-control" value="" placeholder="查询日期" />
+                                <button type="button" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;查&nbsp;询&nbsp;</button>
+                            </div>
+
+                        </div>
+                        <table id="showData" class="table table-bordered"></table>
+                    </div>
+
+                </div>
+
+            </div>
+            <!--body wrapper end-->
+            <!--footer section start-->
+            <footer class="text-left">
+                &copy; 2016 <a href="https://cn.dgmfx.com" target="_blank">cn.dgmfx.com.</a> All rights reserved.
+            </footer>
+            <!--footer section end-->
+        </div>
+        <!-- main content end-->
+    </section>
+    @Scripts.Render("~/AdminExjs")
+
+</body>
+</html>

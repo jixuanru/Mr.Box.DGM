@@ -1,0 +1,525 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>出金申请表</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/js/Country.js"></script>
+    <script src="~/Scripts/js/AccountWithdralTables.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[3]).addClass("active");
+            InitTables();
+
+            $(".WebWithdrawalsSubmitbtn").click(function () {
+                if (CheckWebApplyData()) {
+                    SubmitWebApplyData();
+                }
+            });
+            $("#modalwithdraw")
+                .click(function () {
+                    $("#modal_withdraw").modal('hide');
+                });
+        })
+    </script>
+    <style>
+        .modal_withdrawico{background:url('../../Content/images/dialog-icons.gif') 0 0 no-repeat;width:48px;height:48px;border:0;}
+        .modal_withdraw_Con{margin-top: 15px;display: block;}
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">出金申请表</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <td class="text-center"><label>在线取款申请表</label></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <p>请填写下面的信息，以便您取回您的账户资金或者是取消您的交易账户，DGMFX将完全按照你所提交的填写申请进行处理，不对您填写的错误负有任何的责任，取款申请将在3-5个工作日由DGMFX进行处理。</p>
+                            <p>取款手续费单笔40美元（包括银行和中转银行手续费）</p>
+                            <p> 我们不接受任何的第三方形式的取款，取款是以国际电汇的方式处理.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><label>账户信息</label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWAccountHolder">账户持有人姓名</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWAccountHolder" placeholder="账户持有人姓名">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWTrading_account">交易账号</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWTrading_account" placeholder="交易账号">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWPhone">电话</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWPhone" placeholder="电话">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWEmail">邮箱</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWEmail" placeholder="邮箱">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="WWAddress">地址</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWAddress" placeholder="地址">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="country">居住国家</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="country"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWProvince">州/省:</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWProvince" placeholder="州/省">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWCity">城市</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWCity" placeholder="城市">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWZipCode">邮编</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWZipCode" placeholder="邮编">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWMoney">取款金额</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWMoney" placeholder="$USD">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6"></div>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">平台</label>
+                                        <div class="col-sm-10">
+                                            <input id="Radio1" type="radio" checked="checked" class="radioInput" name="ckdPlatformName" value="meta trader 4" /><label>meta trader 4 </label>
+                                            <input id="Radio2" type="radio" class="radioinput" name="ckdPlatformName" value="viking" /><label>viking </label>
+                                            <input id="Radio3" type="radio" class="radioInput" name="ckdPlatformName" value="classic" /><label>classic</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">是否关闭交易账户</label>
+                                        <div class="col-sm-10">
+                                            <input id="IsCloseAccountY" type="radio" name="IsCloseAccount" class="radioInput" value="是" /><label>是</label>
+                                            <input id="IsCloseAccountN" type="radio" checked="checked" name="IsCloseAccount" class="radioInput" value="否" /><label>否</label>
+                                            <span class="IsCloseAccountN_span"><label>（最低保留50美元，如果低于50美元账户将会被关闭）</label></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="closeaccount">
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="IsCloseAccountText">关闭账户原因</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="IsCloseAccountText" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" colspan="4"><label>银行信息</label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWBankName">银行名称+分行名称</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWBankName" placeholder="银行名称">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWBankAccount">银行账号</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWBankAccount" placeholder="银行账号">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="AccountHolderName">账户持有人姓名</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="AccountHolderName" placeholder="账户持有人姓名">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWSWIFT_Code">SWIFT Code</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWSWIFT_Code" placeholder="SWIFT Code">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="WWBankAddress">银行地址</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWBankAddress" placeholder="银行地址">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="country2">国家</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="country2"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWBankProvince">州/省</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWBankProvince" placeholder="州/省">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWBankCity">城市</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWBankCity" placeholder="城市">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWBankZipCode">邮编</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWBankZipCode" placeholder="邮编">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr><td class="text-center"><label>中转银行(如果有请填写)</label></td></tr>
+
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">姓有中转银行吗？</label>
+                                        <div class="col-sm-8">
+                                            <input id="RadioIsTransitBankY" type="radio" name="IsTransitBank" class="radioInput" value="是" /><label>是</label>
+                                            <input id="RadioIsTransitBankN" type="radio" name="IsTransitBank" checked="checked" class="radioInput" value="否" /><label>否</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="TransitBankInfo table table-striped">
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitBankName">银行名称</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitBankName" placeholder="银行名称">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitBankAcoount">银行账号</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitBankAcoount" placeholder="银行账号">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitAcoountHolderName">账户持有人姓名</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitAcoountHolderName" placeholder="账户持有人姓名">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitSWIFTCode">SWIFT Code</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitSWIFTCode" placeholder="SWIFT Code">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="col-sm-2 control-label" for="WWTransitBankAddress">银行地址</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitBankAddress" placeholder="银行地址">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="country3">国家</label>
+                                                    <div class="col-sm-8">
+                                                        <select class="form-control" id="country3"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitProvince">州/省</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitProvince" placeholder="州/省">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitCity">城市</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" id="WWTransitCity" type="text" placeholder="城市" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label" for="WWTransitZipCode">邮编</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" id="WWTransitZipCode" placeholder="邮编">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                    </tr>
+                    <tr><td class="text-center"><label>账户持有人</label></td></tr>
+
+                    <tr>
+                        <td>
+                            <label>取款银行账户持有人姓名必须要与DGMFX的账户持有人姓名相同，由于国际反洗钱法律我们只能将资金电汇到同一个人的不同银行账户下，在任何情况下，DGMFX不接受任何第三方取款.</label>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="WWMainAccountHolderName">主要账户持有人姓名</label>
+                                    <div class="col-sm-8">
+                                        <input class="form-control" type="text" id="WWMainAccountHolderName" placeholder="姓名">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><input type="button" value="提交" class="WebWithdrawalsSubmitbtn btn btn-success" /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+    @{Html.RenderPartial("Foot");}
+
+
+    <!-----弹出窗------->
+    <div class="modal fade" id="modal_withdraw" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="reLoginclose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-1"><div class="modal_withdrawico"></div></div>
+                            <div class="col-xs-10"><span class="modal_withdraw_Con">出金申请提交成功</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalwithdraw" class="btn btn-success">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+</html>

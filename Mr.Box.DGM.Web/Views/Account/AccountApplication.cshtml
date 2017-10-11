@@ -1,0 +1,373 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>DGMFX--账户申请</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <script src="~/Scripts/js/Country.js"></script>
+    @Styles.Render("~/css")   
+    <script src="~/Scripts/layer/layer.js"></script>
+    
+
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->        
+    
+
+    <style type="text/css">
+        .form-group {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+    
+    <script type="text/javascript">
+        $(function () {
+            $("#formGroupCountry").text("中国 China");
+            BindSelect("#formGroupCountry", Country);
+            var _agent=@ViewBag.Agent;
+            if (parseInt(_agent)!=1) {
+                $("#formGroupAgency").val(@ViewBag.Agent);
+                $("#formGroupAgency").attr("disabled","disabled");
+                document.getElementById("formGroupAgency").disabled=true;
+            }else {
+                $("#formGroupAgency").val("");
+                $("#formGroupAgency").removeAttr("disabled");
+                document.getElementById("formGroupAgency").disabled=false;
+            }
+            LoadData();
+            $("#Submit").click(function () {
+                var $btn = $(this).button('loading');
+                
+                if (Check()) {
+                    SubmitData();
+                    $btn.button('reset');
+                }else {
+                    
+                    layer.msg('请检查您的信息是否填写完成!', function(){
+                        //关闭后的操作
+                        $btn.button('reset');
+                    });
+                    //setTimeout(function(){},1500);
+
+                }
+            });
+        })
+
+
+        //提交数据
+        function SubmitData() {
+            var country = $("#formGroupCountry").val(); //居住国家
+            var Zh_Surname = $("#formGroupCH_FalimytName").val(); //姓名中文汉字: 姓
+            var Zh_Name = $("#formGroupCH_FirstName").val(); //姓名中文汉字: 名
+            var Rome_Surname = $("#formGroupEN_FalimytName").val(); //姓名罗马拼写: 姓
+            var Rome_Name = $("#formGroupEN_FirstName").val(); //姓名罗马拼写: 名
+            var Account_Title = $("#formGroupSex").val(); //称谓
+            var Account_Email = $("#formGroupEmail").val(); //电子邮件地址
+            var Account_Agents = $("#formGroupAgency").val(); //所属代理商
+            var Account_Password = $("#formGroupPwd").val(); //设置密码
+            var isAgents=$("input[name='isAgents']:checked").val();//是否开设代理账户
+
+            //验证用户邮箱是否存在
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Account/EmailValidate")',
+                data: { "Email": Account_Email, "Name": Zh_Surname + Zh_Name },
+                success: function(dddd) {
+                    //alert(dddd);
+                    if (dddd == 1) {
+                        $.ajax({
+                            type: "POST",
+                            async: true,
+                            url: '@Url.Content("~/Account/Registration")',
+                            data: {
+                                "Country": country,
+                                "Zh_Surname": Zh_Surname,
+                                "Zh_Name": Zh_Name,
+                                "Rome_Surname": Rome_Surname,
+                                "Rome_Name": Rome_Name,
+                                "Account_Title": Account_Title,
+                                "Account_Email": Account_Email,
+                                "Account_Agents": Account_Agents,
+                                "Account_Password": Account_Password,
+                                "isAgents": isAgents
+                            },
+                            success: function(data) {
+                                if (data == "success") {
+                                    window.location = '@Url.Content("~/Account/PersonalInfo")';
+                                } else {
+                                    layer.msg('数据提交失败,请重新提交!', { icon: 5 }, function() {})
+                                }
+                            }
+                        });
+                    } else {
+                        layer.msg('此邮箱已经存在,请更换邮箱!', { icon: 5 });
+                    }
+                }
+
+            });
+
+
+        }
+
+        function Check() {
+            var inputText=$("input[type='text']");
+            for (var i = 0; i < inputText.length-1; i++) {
+                if(delHtmlTag($("#"+inputText[i].id).val())=="")   {
+                    $("#"+inputText[i].id).parents(".form-group").addClass("has-error");
+                    return false;
+                }else {
+                    $("#"+inputText[i].id).parents(".form-group").removeClass("has-error");
+                }
+            }
+
+            if(!CheckMail($("#formGroupEmail").val())){
+                $("#formGroupEmail").parents(".form-group").addClass("has-error");
+                return false;
+            } else {
+                $("#formGroupEmail").parents(".form-group").removeClass("has-error");
+            }
+
+            var inputPwd=$("input[type='password']");
+            for (var i = 0; i < inputPwd.length; i++) {
+                if(delHtmlTag($("#"+inputPwd[i].id).val())=="")   {
+                    $("#"+inputPwd[i].id).parents(".form-group").addClass("has-error");
+                    return false;
+                }else {
+                    $("#"+inputPwd[i].id).parents(".form-group").removeClass("has-error");
+                }
+            }
+            if (delHtmlTag($("#formGroupPwd").val()) != delHtmlTag($("#formGroupPwdRe").val())) {
+                $("#formGroupPwdRe").parents(".form-group").addClass("has-error");
+                return false;
+            }else {
+                $("#formGroupPwdRe").parents(".form-group").removeClass("has-error");
+            }
+            return true;
+
+        }
+
+        //加载缓存数据
+        function LoadData() {
+            $.ajax({
+                type: "POST", async: false, url: '@Url.Content("~/Account/GetRegistration")',
+                success: function (data) {
+                    if (data==null||data=="") {
+                        if (@ViewBag.Agent!=1) {
+                            $("#formGroupAgency").val(@ViewBag.Agent);
+                            $("#formGroupAgency").attr("disabled","disabled");
+                            document.getElementById("formGroupAgency").disabled=true;
+                        }else {
+                            $("#formGroupAgency").removeAttr("disabled");
+                            document.getElementById("formGroupAgency").disabled=false;
+                        }
+                        return;
+                    }else {
+                        var item = eval(data);
+                        $("#formGroupCountry").val(item.Country);
+                        $("#formGroupSex").val(item.Nickname);
+                        $("#formGroupCH_FalimytName").val(item.CH_Surname);
+                        $("#formGroupCH_FirstName").val(item.CH_Name);
+                        $("#formGroupEN_FalimytName").val(item.EN_Surname);
+                        $("#formGroupEN_FirstName").val(item.EN_Name);
+                        $("input[name='isAgents'][value='"+item.IsAgents+"']").prop("checked","checked");
+                        $("#formGroupEmail").val(item.Email);
+                        $("#formGroupPwd").val(item.AccountPassword);
+                        $("#formGroupPwdRe").val(item.AccountPassword);
+                        $("#formGroupAgency").val(item.Agents);
+                    }
+                }
+            })
+        }
+    </script>
+
+
+
+</head>
+<body>
+    <div class="container-fluid">
+
+        @{Html.RenderPartial("_Top");}
+
+
+        <section class="openAccount row">
+         
+            <div class="col-md-8 col-md-offset-2">
+                <div class="form-horizontal">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCountry">居住国家</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupCountry"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                          
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCH_FalimytName">中文:姓</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupCH_FalimytName" placeholder="姓">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCH_FirstName">中文:名</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupCH_FirstName" placeholder="名">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <label class="col-sm-4 control-label" for="formGroupEN_FalimytName">拼音:姓</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupEN_FalimytName" placeholder="姓">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <label class="col-sm-4 control-label" for="formGroupEN_FirstName">拼音:名</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupEN_FirstName" placeholder="名">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupSex">称谓</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupSex">
+                                                    <option value="先生">先生</option>
+                                                    <option value="小姐">小姐</option>
+                                                    <option value="女士">女士</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">是否代理账号</label>
+                                            <div class="col-sm-8">
+                                                <div class="checkbox col-sm-4"><input type="radio" name="isAgents" value="Y" id="radio1"><label for="radio1">是</label></div>
+                                                <div class="checkbox col-sm-4"><input type="radio" name="isAgents" value="N" id="radio2"><label for="radio2">否</label></div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <label class="col-sm-4 control-label" for="formGroupEmail">电子邮件</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupEmail" placeholder="电子邮件">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6"><label class="control-label">电子邮件是主要的联系方式，请您提供正确可用的电子邮件地址。</label></div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupAgency">代理商</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupAgency" placeholder="代理商">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 hidden"></div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr><td><div class="col-sm-12"><label class="control-label">设置客服登录信息</label></div></td></tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <label class="col-sm-4 control-label" for="formGroupPwd">密码:</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="password" id="formGroupPwd" placeholder="密码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group ">
+                                            <label class="col-sm-4 control-label" for="formGroupPwdRe">确认密码</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="password" id="formGroupPwdRe" placeholder="确认密码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button id="Submit" type="button" class="btn  center-block btn_open" data-loading-text="loading..." autocomplete="off">下一步</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+           
+        </section>
+
+
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>

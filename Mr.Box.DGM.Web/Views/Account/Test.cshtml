@@ -1,0 +1,434 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" /><meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>测试上传文件页</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Content/Account.css" rel="stylesheet" />
+    <link href="~/Scripts/Liger/lib/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" />
+    <link href="~/Content/common.css" rel="stylesheet" />
+    <link href="~/Content/zzsc.css" rel="stylesheet" />
+    @Scripts.Render("~/jsCollection")
+    <script src="~/Scripts/uploadify/jquery.uploadify.min.js"></script>
+    <script src="~/Scripts/uploadify/jquery.uploadify.js"></script>
+    <script type="text/javascript">
+        function Upload_Person() {
+            $("#file_Person").uploadify({
+                'debug': false,//开启调试
+                'swf': '../Scripts/uploadify/uploadify.swf',//flash
+                'uploader': '../Scripts/uploadify/upload_Person.ashx',
+                //'formData': { 'strFilePath': 'Test' },
+                'successTimeout': 99999,//超时时间
+                //'method': 'get',//传参method要设置成get  默认post
+                //'folder': 'UpLoad',//文件上传目录
+                'fileObjName': 'upload_Person',
+                'queueID': 'fileQueue',//显示上传列表
+                'auto': false,//true 会自动上传
+                'overrideEvents': ['onDialogClose'],//不执行默认的onSelect事件
+                'multi': true,//true表示上传多个文件
+                'fileTypeDesc': '支持的格式：',
+                'fileTypeExts': '*.jpg;*.jpge;*.gif;*.png;*.bmp',
+                'buttonText': '选择文件',
+                'fileSizeLimit': '3MB',//0表示无限制
+                'queueSizeLimit': 1,
+                //'buttonImg': '../Scripts/uploadify/excel.jpg',//按钮图片路径
+                'width': '80',
+                'height': '21',
+                //每次更新上载的文件的进展
+                'onUploadProgress': function (file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) {
+                    //有时候上传进度什么想自己个性化控制，可以利用这个方法
+                    //使用方法见官方说明
+                },
+                //选择上传文件后调用
+                'onSelect': function (file) {
+                },
+                //返回一个错误，选择文件的时候触发
+                'onSelectError': function (file, errorCode, errorMsg) {
+                    switch (errorCode) {
+                        case -100:
+                            $.ligerDialog.warn("上传的文件数量已经超出系统限制的" + $('#file_Person').uploadify('settings', 'queueSizeLimit') + "个文件！");
+                            break;
+                        case -110:
+                            $.ligerDialog.warn("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_Person').uploadify('settings', 'fileSizeLimit') + "大小！");
+                            break;
+                        case -120:
+                            $.ligerDialog.warn("文件 [" + file.name + "] 大小异常！");
+                            break;
+                        case -130:
+                            $.ligerDialog.warn("文件 [" + file.name + "] 类型不正确！");
+                            break;
+                    }
+                },
+                //检测FLASH失败调用
+                'onFallback': function () {
+                    alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+                },
+                //上传到服务器，服务器返回相应信息到data里 每个文件上传成功后都会执行
+                'onUploadSuccess': function (file, data, response) {
+                    if (data == file.name) {
+                        $.ligerDialog.warn("文件[" + file.name + "]已经存在,请尝试重命名后再上传!");
+                    }
+                    else {
+                        if ($("#_PType").val() == "身份证正面") {
+                            $("#idcard1").attr("src", "../../UpLoad/Credentials/IDCard/" + file.name);
+                        } else {
+                            $("#idcard2").attr("src", "../../UpLoad/Credentials/IDCard/" + file.name);
+                        }
+                    }
+                }
+                , 'onUploadStart': function (file) {
+
+                    $("#file_Person").uploadify("settings", "formData", { 'strFilePath': 'IDCard' ,'userName':$("#p_name").val()});
+                    //$("#uploadify").uploadify("settings",  'strFilePath','Test' );
+                    //在onUploadStart事件中，也就是上传之前，把参数写好传递到后台。
+                }
+            });
+
+        }
+
+        function Upload_Agency() {
+            $("#file_Agency").uploadify({
+                'debug': false,//开启调试
+                'swf': '../Scripts/uploadify/uploadify.swf',//flash
+                'uploader': '../Scripts/uploadify/upload_Agency.ashx',
+                //'formData': { 'strFilePath': 'Test' },
+                'successTimeout': 99999,//超时时间
+                //'method': 'get',//传参method要设置成get  默认post
+                //'folder': 'UpLoad',//文件上传目录
+                'fileObjName': 'upload_Agency',
+                'queueID': 'fileQueue',//显示上传列表
+                'auto': false,//true 会自动上传
+                'overrideEvents': ['onDialogClose'],//不执行默认的onSelect事件
+                'multi': true,//true表示上传多个文件
+                'fileTypeDesc': '支持的格式：',
+                'fileTypeExts': '*.jpg;*.jpge;*.gif;*.png;*.bmp',
+                'buttonText': '选择文件',
+                'fileSizeLimit': '3MB',//0表示无限制
+                'queueSizeLimit': 1,
+                //'buttonImg': '../Scripts/uploadify/excel.jpg',//按钮图片路径
+                'width': '80',
+                'height': '21',
+                //每次更新上载的文件的进展
+                'onUploadProgress': function (file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) {
+                    //有时候上传进度什么想自己个性化控制，可以利用这个方法
+                    //使用方法见官方说明
+                },
+                //选择上传文件后调用
+                'onSelect': function (file) {
+                },
+                //返回一个错误，选择文件的时候触发
+                'onSelectError': function (file, errorCode, errorMsg) {
+                    switch (errorCode) {
+                        case -100:
+                            $.ligerDialog.warn("上传的文件数量已经超出系统限制的" + $('#file_Agency').uploadify('settings', 'queueSizeLimit') + "个文件！");
+                            break;
+                        case -110:
+                            $.ligerDialog.warn("文件 [" + file.name + "] 大小超出系统限制的" + $('#file_Agency').uploadify('settings', 'fileSizeLimit') + "大小！");
+                            break;
+                        case -120:
+                            $.ligerDialog.warn("文件 [" + file.name + "] 大小异常！");
+                            break;
+                        case -130:
+                            $.ligerDialog.warn("文件 [" + file.name + "] 类型不正确！");
+                            break;
+                    }
+                },
+                //检测FLASH失败调用
+                'onFallback': function () {
+                    alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+                },
+                //上传到服务器，服务器返回相应信息到data里 每个文件上传成功后都会执行
+                'onUploadSuccess': function (file, data, response) {
+                    if (data == file.name) {
+                        $.ligerDialog.warn("文件[" + file.name + "]已经存在,请尝试重命名后再上传!");
+                    }
+                    else {
+                        switch (_AtypeManage.getValue()) {
+                            case "公司法人身份证正面":
+                                $("#card1").attr("src", "../../UpLoad/Credentials/IDCard/" + file.name);
+                                break;
+                            case "公司法人身份证反面":
+                                $("#card2").attr("src", "../../UpLoad/Credentials/IDCard/" + file.name);
+                                break;
+                            case "公司营业执照":
+                                $("#card3").attr("src", "../../UpLoad/Credentials/License/" + file.name);
+                                break;
+                            case "公司银行账户信息":
+                                $("#card4").attr("src", "../../UpLoad/Credentials/Bank/" + file.name);
+                                break;
+                            case "公司地址证明":
+                                $("#card5").attr("src", "../../UpLoad/Credentials/Address/" + file.name);
+                                break;
+                            default: break;
+
+                        }
+
+                    }
+                },
+                'onUploadStart': function (file) {
+                    var apath = "";
+                    switch (_AtypeManage.getValue()) {
+                        case "公司法人身份证正面":
+                            apath = "IDCard";
+                            break;
+                        case "公司法人身份证反面":
+                            apath = "IDCard"
+                            break;
+                        case "公司营业执照":
+                            apath = "License";
+                            break;
+                        case "公司银行账户信息":
+                            apath = "Bank";
+                            break;
+                        case "公司地址证明":
+                            apath = "Address";
+                            break;
+                        default: break;
+
+                    }
+                    $("#file_Agency").uploadify("settings", "formData", { 'strFilePath': apath ,'userName':$("#a_name").val()});
+                }
+            });
+        }
+        $(document).ready(function () {
+            Upload_Person();
+            Upload_Agency();
+            NoticesHome();
+        });
+    </script>
+    <script type="text/javascript">
+        var _AtypeManage;//机构客户
+        var _PtypeManage;//个人客户
+        $(function () {
+            $("#P").css("display", "none");
+            var AtypeData = [{ id: '公司法人身份证正面', text: '公司法人身份证正面' }, { id: '公司法人身份证反面', text: '公司法人身份证反面' }, { id: '公司营业执照', text: '公司营业执照' }, { id: '公司银行账户信息', text: '公司银行账户信息' }, { id: '公司地址证明', text: '公司地址证明' }];
+            var PtypeData = [{ id: '身份证正面', text: '身份证正面' }, { id: '身份证反面', text: '身份证反面' }];
+            _AtypeManage = $("#AType").ligerComboBox({
+                data: AtypeData, valueFieldID: '_AType', width: 170
+            });
+            _PtypeManage = $("#PType").ligerComboBox({
+                data: PtypeData, valueFieldID: '_PType', width: 170
+            })
+            _AtypeManage.setValue('公司法人身份证正面');
+            _PtypeManage.setValue('身份证正面');
+
+            $("#btn_submit").click(function () {
+                alert($("#_AType").val());
+            })
+        })
+
+        function Person() {
+            if ($("#p_name").val()=="") {
+                $.ligerDialog.warn("请输入您的姓名!");
+            } else {
+                $('#file_Person').uploadify('upload', '*');
+            }
+        }
+        function Agency() {
+            if ($("#a_name").val() == "") {
+                $.ligerDialog.warn("请输入您的姓名!");
+            } else {
+                $('#file_Agency').uploadify('upload', '*');
+            }
+        }
+        function PersonOrAgency() {
+            var type = $("input[name='POA']:checked").val();
+            if (type == "Person") {
+                $("#P").css("display", "block").css("width", "100%");
+                $("#A").css("display", "none");
+            }
+            else {
+                $("#A").css("display", "block").css("height", "55px");
+                $("#P").css("display", "none");
+            }
+        }
+    </script>
+    <style type="text/css">
+        #P a{border:1px solid #b3b3b3;padding:1px 10px 1px 10px;text-decoration:none;color:#b3b3b3;}
+        #P a:hover{color:#00ffff;border:1px solid #00ffff;}
+        #A a{border:1px solid #b3b3b3;padding:1px 10px 1px 10px;text-decoration:none;color:#b3b3b3;}
+        #A a:hover{color:#00ffff;border:1px solid #00ffff;}
+    </style>
+</head>
+<body>
+    <div class="Notice"><div style="float:right;color:#00ffff;"><a href="http://cn.dgmfx.com/">中文</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.dgmfx.com">English</a></div></div><div id="CommonHead">
+        <div class="logo">
+            <img src="~/Images/Index/logo.png" width="1000" />
+        </div>
+        <div class="menu">
+            <ul>
+                <li><a href="@Url.Content("~/Home/Index")">首页</a></li>
+                <li><a href="@Url.Content("~/Account/Account")" style="color:#00ffff;">账户服务</a></li>
+                <li><a href="@Url.Content("~/Services/Services")">服务方案</a></li>
+                <li><a href="@Url.Content("~/TechSuperiority/TechSuperiority")">技术优势</a></li>
+                <li><a href="@Url.Content("~/PlatformServices/MetaTrader4")">平台服务</a></li>
+                <li><a href="@Url.Content("~/AboutUs/Notices")">关于我们</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="CommonCenter">
+        <div class="commonimg">
+            <img src="~/Images/img/1.jpg" width="1410" />
+        </div>
+        <div class="common-float">
+            <div class="common-left">
+                <ul>
+                    <li><a href="@Url.Content("~/Account/OnlineClass")">视频课堂</a></li><li>|</li><li><a href="@Url.Content("~/Agency/Login")" target="_blank">客户登录</a></li>
+                    <li>|</li>
+                    <li><a href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn" target="_blank">在线客服</a></li>
+                    <li>|</li>
+                    <li><a href="#" id="about">关注我们</a></li>
+                </ul>
+            </div>
+            <div class="common-right">
+                <ul>
+                    <li>客服邮箱:&nbsp;<a href="mailto:info@dgmfx.com" class="mail">info@dgmfx.com</a></li>
+                    <li>|</li>
+                    <li>客服电话:&nbsp;400-895-8686</li>
+                </ul>
+            </div>
+            <div style="overflow:hidden;"></div>
+        </div>
+
+    </div>
+
+    <div class="Account-center">
+        <div class="Account-center-left">
+            <div>开始申请</div>
+            <div>个人信息</div>
+            <div>账户协议</div>
+            <div class="curr">上传证件</div>
+        </div>
+        <div class="Account-center-right">
+            <div class="acc-menu">
+                <a href="@Url.Content("~/Home/Index")">首页</a>&gt;&gt;<a href="@Url.Content("~/Account/Account")">账户服务</a>&gt;&gt;<a>上传证件</a>
+            </div>
+            <div style=" height:500px; border:1px solid Lime">
+                <div class="PersonOrAgency">
+                    <input type="radio" value="Person" name="POA"  onchange="PersonOrAgency();" />个人开户<input type="radio" value="Agency" checked="checked" name="POA" onchange="PersonOrAgency();" style="margin-left:30px;" />机构开户
+                </div>
+                <div id="P">
+                    <div style=" height:60px;">
+                        <div style="float:left;margin-top:21px;margin-left:20px;color:#b3b3b3;">文件类型:</div>
+                        <div style="float:left; margin-top:21px;margin-left:20px;"><input type="text" id="PType" /></div>
+                        <div style="float:left;margin-top:21px;margin-left:20px;color:#b3b3b3;" >姓名:<input type="text" id="p_name" class="textbox" size="15"/></div>
+                        <div style="float:left;"><div id="file_Person" ></div></div>
+                        <div style="float:left;margin-top:21px;margin-left:20px;"><a href="javascript:Person();">开始上传</a></div>
+                        <div style="overflow:hidden;"></div>
+                    </div>
+
+                    <div id="showImgP">
+                        <img id="idcard1" /><img />
+                        <img id="idcard2" /><img />
+                    </div>
+
+                </div>
+
+                <div id="A">
+                    <div style=" height:60px;">
+                        <div style="float:left;margin-top:21px;margin-left:20px;color:#b3b3b3;">文件类型:</div>
+                        <div style="float:left; margin-top:21px;margin-left:20px;"><input type="text" id="AType" /></div>
+                        <div style="float:left;margin-top:21px;margin-left:20px; color:#b3b3b3;">姓名:<input type="text" id="a_name" class="textbox" size="15" /></div>
+                        <div style="float:left;"><div id="file_Agency"></div></div>
+                        <div style="float:left;margin-top:21px;margin-left:20px;"><a href="javascript:Agency();">开始上传</a></div>
+                        <div style="overflow:hidden;"></div>
+                    </div>
+                    <div id="showImgA">
+                        <img id="card1" />
+                        <img id="card2" /><img id="card3" /><img id="card4" /><img id="card5" />
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <input type="button" id="btn_submit" value="提交证明" />
+            </div>
+        </div>
+
+        <div style="overflow:hidden;"></div>
+    </div>
+
+    <div id="CommonFoot">
+        <div style="position:relative;left:150px;bottom:-35px;width:1036px;height:100px;">
+            <div class="bottom-logo-left"><img src="~/Images/Index/bottom-logo.png" /></div>
+            <div class="bottom-logo-right">
+                <div class="attention-left">
+                    <img src="~/Images/Index/Attention.jpg" width="60" />
+                </div>
+                <div class="attention-middle">
+                    <div>扫一扫</div><div>关注我们</div>
+                </div>
+                <div class="attention-right">
+                    <div>客服邮箱:<a href="mailto:info@dgmfx.com" class="mail">info@dgmfx.com</a></div>
+                    <div>客服电话:400-895-8686</div>
+                </div>
+                <div style="overflow:hidden;"></div>
+            </div>
+            <div style="overflow:hidden;"></div>
+        </div>
+        <div class="bottom">
+            <div style=" width:1000px; margin:auto;margin-top:120px;border-bottom:1px solid #b3b3b3;color:#b3b3b3;font-size:13px;padding-bottom:5px;">
+                风险警示：所有使用保证金交易的金融产品都具有高风险。它们并非适合所有投资者，您的损失可能超过您的初始投资金额。请确认您完全了解相关风险，如有需要，请寻求专业意见。
+            </div>
+            <div style="width:1000px;margin:auto; font-size:13px;color:#b3b3b3;line-height:22px; margin-top:30px;">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="width:380px;">亚洲客服中心</td>
+                        <td style="width:300px;">上海办公室电话：021-50835084</td>
+                        <td rowspan="6">
+                            <div style="margin-top:22px;">
+                                <div style="float:left;width:123px;height:101px;"><a href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn" target="_blank"><img src="~/Images/Index/bottom-service.png" /></a></div>
+                                <div style="float:left;height:101px;">
+                                    <div style="margin-top:63px;">客服电话：400-895-8686</div>
+                                    <div>客服邮箱：<a href="mailto:info@dgmfx.com" class="mail">info@dgmfx.com</a></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr><td>Phone：+640 9358 0788 </td><td>上海办公室传真：021-51355839</td><td></td></tr>
+                    <tr><td>Email：<a href="mailto:info@dgmfx.com" class="mail">info@dgmfx.com</a></td><td>上海客服电话：021-51355837</td></tr>
+                    <tr><td>Add：Level 13,Tower 1,205 Queen Street,</td><td>客服邮箱：<a href="mailto:info@dgmfx.com" class="mail">info@dgmfx.com</a></td></tr>
+                    <tr><td>Auckland Central,New Zealand</td><td>网址：<a href="http://www.dgmfx.com" class="mail">http://www.dgmfx.com</a></td></tr>
+                    <tr><td>DGMFX亚洲客服中心24小时客服电话:4008958686</td><td>地址:上海浦东新区郭守敬路498号28#101</td></tr>
+
+                </table>
+                <div class="bottomMenu">
+                    <ul>
+                        <li><a href="@Url.Content("~/About/Risk")" target="_blank" class="mail">风险披露</a></li>
+                        <li>|</li>
+                        <li><a href="@Url.Content("~/About/PrivacyProtection")" target="_blank" class="mail">隐私政策</a></li>
+                        <li>|</li>
+                        <li><a href="@Url.Content("~/About/PendingStatement")" target="_blank" class="mail">挂单声明</a></li>
+                        <li>|</li>
+                        <li><a href="@Url.Content("~/About/WebsiteDisclaimer")" target="_blank" class="mail">网站免责</a></li>
+                        <li>|</li>
+                        <li><a href="@Url.Content("~/About/ComplaintsProposals")" target="_blank" class="mail">投诉建议</a></li>
+                        <li>|</li>
+                        <li><a target="_blank" href="@Url.Content("~/AboutUs/Notices")" class="mail">关于我们</a></li>
+                    </ul>
+
+                </div>
+                @*<div style="margin:auto; width:280px;">DGM Service 新西兰公司注册号（5085841）</div>*@<div style="margin:auto; width:330px; height:39px;margin-top:10px;">&copy;2015&nbsp;<a href="http://cn.dgmfx.com/" class="mail">cn.dgmfx.com</a>.&nbsp;All Rights Reserved. 版权所有</div>
+            </div>
+        </div>
+        <div id="stickey_footer">
+            <ul class="footer_menu menu_left">
+                <li><a href="@Url.Content("~/PlatformServices/MetaTrader4")" target="_blank">平台下载</a></li>
+                <li><a href="@Url.Content("~/Agency/Login")" target="_blank">客户登录</a></li>
+                <li><a target="_blank" href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn">在线客服</a></li>
+            </ul>
+            <ul class="footer_menu menu_right">
+                <li><a href="mailto:info@dgmfx.com">客服邮箱: info@dgmfx.com</a></li>
+                <li><img src="~/Images/email.png" height="20" /></li>
+                <li><a href="#" style="padding-right:30px;">客服电话: 400-895-8686</a></li>
+                <li><img src="~/Images/phome.png" height="20" /></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

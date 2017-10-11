@@ -1,0 +1,347 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>转帐申请表</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/js/Country.js"></script>
+    <script src="~/Scripts/js/AccountWithdralTables.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[3]).addClass("active");
+            InitTables();
+
+            $(".WebWithdrawalsSubmitbtn").click(function () {
+                if (CheckWebApplyData()) {
+                    SubmitWebApplyData();
+                }
+            });
+            $("#modalwithdraw")
+                .click(function () {
+                    $("#modal_withdraw").modal('hide');
+                });
+        })
+    </script>
+    <style>
+        .modal_withdrawico {
+            background: url('../../Content/images/dialog-icons.gif') 0 0 no-repeat;
+            width: 48px;
+            height: 48px;
+            border: 0;
+        }
+
+        .modal_withdraw_Con {
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">转帐申请表</h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">下列信息必须完整填写</h3>
+                </div>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label" for="WWAccountHolder">客户姓名</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWAccountHolder" placeholder="客户姓名">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">平台</label>
+                                        <div class="col-sm-1">
+                                            <input id="Radio3" type="radio" class="radioInput" name="ckdPlatformName" value="classic" /><label>classic</label>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input id="Radio2" type="radio" class="radioInput" name="ckdPlatformName" value="viking" /><label>viking </label>
+                                        </div>
+                                        <div>
+                                            <input id="Radio1" type="radio" checked="checked" class="radioInput" name="ckdPlatformName" value="meta trader 4" /><label>meta trader 4 </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+
+                <div class="panel-heading">
+                    <label>客户信息：（必须与存档的现有帐户申请表一致）</label>
+                </div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWAddress">邮寄地址</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWAddress" placeholder="邮寄地址" readonly="readonly">
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWPhone">电话</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" id="WWPhone" placeholder="电话">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWCity">城市</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWCity" placeholder="城市">
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWProvince">州/省</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" id="WWProvince" placeholder="州/省">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="WWEmail">工作电子邮件地址</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWEmail" placeholder="工作电子邮件地址">
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWZipCode">邮政编码</label>
+                                        <div class="col-sm-2">
+                                            <input class="form-control" type="text" id="WWZipCode" placeholder="邮政编码" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="panel-heading">
+                    <label style="border-bottom:solid 1px;">A部分：</label>&nbsp;&nbsp;<span style="border-bottom:solid 1px;">（从其它经纪帐户过户至DGM Service Markets帐户）</span>
+                </div>
+                <p>鉴于下方署名客户（"客户"）已同意在DGM开立帐户，以买卖场外即期、远期和期权外汇合同（合称"外汇合同"），客户特此授权DGM酌情向客户 </p>
+                <p>目前的外汇经纪商（"经纪商"）提供本文件，要求立即将客户帐户过户到DGM，经纪商的名称和地址如下所示。 </p>
+                <p>DGM提交本文件后，客户特此指示经纪商结清客户持有的所有未平仓外汇头寸，并立即将该帐户中为此类头寸提供保证金或担保的所有资金、证券或财产过户到DGM。</p>
+                <p>客户进一步指示DGM向客户发送过户确认书 </p>
+
+                <div class="panel-heading">
+                    <label>目前经纪商的信息：</label>
+                </div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWAddress">地址*</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWAddress" placeholder="地址">
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWZipCode">邮政编码</label>
+                                        <div class="col-sm-2">
+                                            <input class="form-control" type="text" id="WWZipCode" placeholder="邮政编码">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="country">国家</label>
+                                        <div class="col-sm-5">
+                                            <select class="form-control" id="country"></select>
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWProvince">州/省</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWProvince" placeholder="州/省">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWPhone">电话</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="text" id="WWPhone" placeholder="电话">
+                                        </div>
+                                        <label class="col-sm-2 control-label" for="WWEmail">工作电子邮件地址</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWEmail" placeholder="工作电子邮件地址">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWPhone">雇主名称</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="text" id="WWPhone" placeholder="雇主名称">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWAddress">地址</label>
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="WWAddress" placeholder="地址">
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWZipCode">邮政编码</label>
+                                        <div class="col-sm-2">
+                                            <input class="form-control" type="text" id="WWZipCode" placeholder="邮政编码">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="country">国家</label>
+                                        <div class="col-sm-5">
+                                            <select class="form-control" id="country"></select>
+                                        </div>
+                                        <label class="col-sm-1 control-label" for="WWProvince">州/省</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWProvince" placeholder="州/省">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label" for="WWPhone">电话</label>
+                                        <div class="col-sm-4">
+                                            <input class="form-control" type="text" id="WWPhone" placeholder="电话">
+                                        </div>
+                                        <label class="col-sm-2 control-label" for="WWEmail">工作电子邮件地址</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control" type="text" id="WWEmail" placeholder="工作电子邮件地址">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:0;border-bottom:0;">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label>* 如果请求变更地址，您还必须提供新的"地址证明"，例如目前年度的水电费或电话费帐单。</label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="panel-heading">
+                    <input id="chkSendMailAgain" type="checkbox" /><label>&nbsp;请向我的新主要电子邮件地址发送一封"密码重设"电子邮件。</label>
+                </div>
+
+                <p>&nbsp;</p>
+                <p>我/我们特此声明，我提供的信息真实无误。我/我们进一步声明，如有重大变更，我/我们将以书面形式通知DGM 。DGM保留核实所提供的信息是否准确，以及在其</p>
+                <p>认为必要时与各方面联系的权利，但并没有这种义务。我/我们确认，DGM 《客户信息更新表》是具有法律约束力的协议。我/我们已仔细阅读该协议的最新版本，并</p>
+                <p>且我/我们同意接受各项条款和条件的约束。</p>
+
+                <div class="text-center"><input type="button" value="提交" class="WebWithdrawalsSubmitbtn btn btn-success" /></div>
+            </div>
+        </div>
+
+    </div>
+    @{Html.RenderPartial("Foot");}
+
+
+    <!-----弹出窗------->
+    <div class="modal fade" id="modal_withdraw" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="reLoginclose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-1"><div class="modal_withdrawico"></div></div>
+                            <div class="col-xs-10"><span class="modal_withdraw_Con">出金申请提交成功</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalwithdraw" class="btn btn-success">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+</html>

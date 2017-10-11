@@ -1,0 +1,397 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>杠杆率变更表</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/js/Country.js"></script>
+    <script src="~/Scripts/js/AccountWithdralTables.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[3]).addClass("active");
+            InitTables();
+
+            $(".WebWithdrawalsSubmitbtn").click(function () {
+                if (CheckWebApplyData()) {
+                    SubmitWebApplyData();
+                }
+            });
+            $("#modalwithdraw")
+                .click(function () {
+                    $("#modal_withdraw").modal('hide');
+                });
+        })
+    </script>
+    <style>
+        .modal_withdrawico {
+            background: url('../../Content/images/dialog-icons.gif') 0 0 no-repeat;
+            width: 48px;
+            height: 48px;
+            border: 0;
+        }
+
+        .modal_withdraw_Con {
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">杠杆率变更表</h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">（仅适用于MetaTrader4帐户）</h3>
+                </div>
+
+                    <p>就我的DGM Service Markets外汇交易帐户而言，下方署名人士特此追认和确认他们申请将目前的帐户杠杆率变更为下列帐户杠杆率：</p>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWAccountHolder">账户持有人姓名</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWAccountHolder" placeholder="账户持有人姓名">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWAccountHolder">账户持有人姓名</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWAccountHolder" placeholder="账户持有人姓名">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWTrading_account">交易账号</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWTrading_account" placeholder="交易账号">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">平台</label>
+                                            <div class="col-sm-1">
+                                                <input id="Radio3" type="radio" class="radioInput" name="ckdPlatformName" value="classic" /><label>classic</label>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input id="Radio2" type="radio" class="radioinput" name="ckdPlatformName" value="viking" /><label>viking </label>
+                                            </div>
+                                            <div>
+                                                <input id="Radio1" type="radio" checked="checked" class="radioInput" name="ckdPlatformName" value="meta trader 4" /><label>meta trader 4 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label>客户信息：（必须与现有帐户的信息相符）</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="WWAddress">邮寄地址</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWAddress" placeholder="邮寄地址">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWCity">城市</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWCity" placeholder="城市">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWProvince">州/省:</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWProvince" placeholder="州/省">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWZipCode">邮政编码</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWZipCode" placeholder="邮政编码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="country">居住国家</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="country"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWEmail">电子邮件地址</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWEmail" placeholder="电子邮件地址">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWPhone">电话</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWPhone" placeholder="电话">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered text-center">
+                        <tr>
+                            <td style="border-bottom:0;">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label style="border-bottom:solid 2px;">选择帐户杠杆率：</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2"><span style="border-bottom:solid 1px;">交易杠杆率</span></div>
+                                            <div class="col-sm-2"><span style="border-bottom:solid 1px;">对应的保证金</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage1" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf10_1" /><span>10：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>10%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage2" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf20_1" /><span>20：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>5%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage3" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf25_1" /><span>25：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>4%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage4" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf50_1" /><span>50：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>2%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage5" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf66_1" /><span>66：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>1.52%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage6" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf75_1" /><span>75：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>1.333%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:0;border-bottom:0;">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-4">&nbsp;</div>
+                                            <div class="col-sm-2">
+                                                <input id="rdoLeverage7" type="radio" class="radioInput" name="ckdLeverage" value="LeverageOf100_1" /><span>100：1</span>
+                                            </div>
+                                            <div class="col-sm-2"><span>1%</span></div>
+                                            <div class="col-sm-4">&nbsp;</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">上述信息必须完整填写，才能处理变更。</h3>
+                </div>
+
+                <p>我/我们特此声明，我/我们提供的信息真实无误。我/我们进一步声明，如有重大变更，我/我们将以书面形式通知DGM。DGM保留核实所提供的信息是否准确，以及在其认为必要</p>
+                <p>时与各方面联系的权利，但并没有这种义务。我/我们确认，DGM《杠杆率变更表》是具有法律</p>
+                <p>约束力的协议。我/我们已仔细阅读该协议的最新版本，并且我/我们同意接受各项条款和条件的约束。</p>
+                <p>*DGM提醒您考虑提高杠杆率的风险。我/我们理解，市场上相对较小的波动可能按比例放大，对我/我们已存入或将要存入的资金产生较大影</p>
+                <p>响，这可能对我/我们不利，也可能对我/我们有利。我/我们可能损失全部原始保证金，并需要存入额外资金来补仓。</p>
+
+                <div class="text-center"><input type="button" value="提交" class="WebWithdrawalsSubmitbtn btn btn-success" /></div>
+            </div>
+        </div>
+
+    </div>
+    @{Html.RenderPartial("Foot");}
+
+
+    <!-----弹出窗------->
+    <div class="modal fade" id="modal_withdraw" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="reLoginclose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-1"><div class="modal_withdrawico"></div></div>
+                            <div class="col-xs-10"><span class="modal_withdraw_Con">出金申请提交成功</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalwithdraw" class="btn btn-success">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+</html>

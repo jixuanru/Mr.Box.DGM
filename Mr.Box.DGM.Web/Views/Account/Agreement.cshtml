@@ -1,0 +1,117 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>DGMFX--账户协议</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+
+    <script src="~/Scripts/icheck/icheck.min.js"></script>
+    <link href="~/Scripts/icheck/skins/square/red.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+       <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+       <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+     <![endif]-->
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("input[name='agreement']").iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+                increaseArea: '20%' // optional
+            });
+        });
+        $(function () {
+
+            $("#Prv").click(function () { window.location = '@Url.Content("~/Account/Classification")'; })
+            $("#Next")
+                .click(function() {
+                    if (CheckChecked()) {
+                        $.ajax({
+                            type: "POST",
+                            async: true,
+                            url: '@Url.Content("~/Account/AcceptApplication")',
+                            success: function(data) {
+                                if (data == "success") {
+                                    window.location = '@Url.Content("~/Account/ConfirmRequest")';
+                                } else {
+                                    if (confirm("提交超时,请重新提交!")) {
+                                        window.location = '@Url.Content("~/Account/AccountApplication")';
+                                    } else {
+
+                                    }
+
+                                }
+                            }
+                        });
+                    }
+                });
+        })
+        function CheckChecked() {
+            var str = "";
+            $("input[name='agreement']")
+                .each(function() {
+                    str += this.checked + ",";
+                });
+            if (str != "true,true,true,true,") {
+                bootbox.alert("请认真阅读相关协议,并同意所有协议后再进行下一步操作!"); return false;
+            }
+            return true;
+        }
+    </script>
+
+
+
+    <style type="text/css">
+      
+      
+        .agreement{color:#172025;line-height:30px;margin:30px auto 30px 30px;}
+        .agreement p{margin-bottom:20px;}
+        .agreement p a{color:#f60e0e;text-decoration:none;}
+        .agreement p a:hover{text-decoration:underline;}
+        label{display:inline;}
+        /*.agreement div input{background-color:black;text-align:center;color:#b3b3b3;width:80px;}*/
+       
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section class="row openAccount">
+
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="agreement">
+                    <p><input type="checkbox" name="agreement" id="check1"/>&nbsp;&nbsp;<label for="check1">我理解外汇和差价合约保证金交易含有较高损失风险，因此可能不适合我，同时我可能不具备必要的经验和知识以了解其中所含风险。我已阅读并理解被提供的信息，包括客户协议附表二中的风险披露声明，并愿意继续开户申请。</label></p>
+                    <p><input type="checkbox" name="agreement" id="check2"/>&nbsp;&nbsp;<label for="check2">我已阅读并理解<a href="~/UpLoad/Software/Application.pdf" target="_blank">客户协议</a>，并同意受该协议条款的约束.在 DGMFX.com 开设交易帐户并注资完全处于本人主动意愿， DGMFX.com 或其代理商未针对本人采取任何有关开户的推销行为。</label></p>
+                    <p><input type="checkbox" name="agreement" id="check3"/>&nbsp;&nbsp;<label for="check3">我们希望向您发送DGMFX.com的新闻和推广信息。在今后我们与您的所有联系中，您都可以取消接受此类信息。如果希望从现在起不接受此类信息，请取消勾选该项。</label></p>
+                    <p><input type="checkbox" name="agreement" id="check4"/>&nbsp;&nbsp;<label for="check4">我们有时可能会向您发送第三方相关产品或服务的信息。如果您愿意接受此类信息，请勾选该项。</label></p>
+                   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6  col-xs-6 text-right">
+                    <button type="button" class="btn btn_open text-center" id="Prv">上一步</button>
+                </div>
+                <div class="col-sm-6 col-xs-6 text-left">
+                    <button type="button" class="btn btn_open text-center" id="Next">提&nbsp;交</button>
+                </div>
+            </div>
+        </section>
+
+        
+        
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>

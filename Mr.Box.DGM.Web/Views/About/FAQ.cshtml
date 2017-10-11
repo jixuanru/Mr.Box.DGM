@@ -1,0 +1,43 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>常见问题|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section style="margin-top:80px;">
+            <img src="@Url.Content("~/Content/image/faq_top.jpg")" class="img-responsive center-block"/>
+        </section>
+        <section class="faq_bottom_bg row">
+            <img src="@Url.Content("~/Content/image/faq_bottom.jpg")" class="img-responsive"/>
+            <div class="col-xs-2 col-xs-offset-1"><a href="@Url.Content("~/UpLoad/Software/FAQ.pdf")"><img src="~/Content/image/faq_button.png" class="img-responsive" /></a> </div>
+           
+        </section>
+        @{Html.RenderPartial("_Foot");}
+
+    </div>
+    <script src="@Url.Content("~/Scripts/js/nav/wow.min.js")"></script>
+    <script>
+
+
+        new WOW().init();
+    </script>
+</body>
+</html>

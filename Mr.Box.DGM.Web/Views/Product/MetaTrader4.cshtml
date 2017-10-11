@@ -1,0 +1,178 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MetaTrader4|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-group .control-label {
+            color: #FFF;
+            text-align: right;
+        }
+
+        .form-group .form-control {
+            background-color: transparent;
+            background-image: none;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <div id="inSlider" class="carousel slide carousel-fade row" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <div class="container">
+                        <div class="carousel-caption1 slowest wow fadeInLeft">
+                            <p style="padding-left:25%;">
+                                <a href="@Url.Content("https://download.mql5.com/cdn/web/decoder.global.markets/mt4/decoderglobalmarkets4setup.exe")" title="下载MT4平台">
+                                    <img src="@Url.Content("~/Content/image/mt4_top_logo.png")" class="img-responsive" />
+                                </a>
+                            </p>
+                            <p><img src="@Url.Content("~/Content/image/mt4_top_01.png")" class="img-responsive" /></p>
+                        </div>
+                    </div>
+                    <!-- Set background for slide in css -->
+                    <div class="header_back mt4_top wow fadeInRight"></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="mt4_cnx">
+            <div class="container containerMtop">
+                <div class="row" id="movieposters">
+                    <div class="col-sm-4 col-sm-offset-0 col-xs-8 col-xs-offset-2" title="MT4客户端">
+                        <img src="@Url.Content("~/Content/image/mt4_01.jpg")" class="img-responsive wow fadeInLeft" alt="MT4客户端" />
+                        <div class="movieinfo text-center wow rollIn">
+                            <p>更人性化的界面<br />交易一目了然</p>
+                            <a href="@Url.Content("~/Product/Client")" target="_blank" title="MT4客户端">MT4客户端</a>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-4  col-sm-offset-0 col-xs-8 col-xs-offset-2" title="MT4手机端">
+                        <img src="@Url.Content("~/Content/image/mt4_02.jpg")" class="img-responsive wow fadeInDown" alt="MT4手机端" />
+                        <div class="movieinfo text-center wow bounceInDown">
+                            <p>支持众多手机型号<br />和操作系统</p>
+                            <a href="@Url.Content("~/Product/Phone")" target="_blank" title="MT4手机端">MT4手机端</a>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-4  col-sm-offset-0 col-xs-8 col-xs-offset-2" title="常见问题">
+                        <img src="@Url.Content("~/Content/image/mt4_03.jpg")" class="img-responsive wow fadeInRight" alt="常见问题" />
+                        <div class="movieinfo text-center wow lightSpeedIn">
+                            <p>常见问题锦集</p>
+                            <a href="@Url.Content("~/About/FAQ")" target="_blank" title="常见问题">常见问题</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @*<section class="row">
+            <div class="col-sm-6 col-xs-12 mt4_cnx_left flash">
+                <div class="col-sm-7 col-sm-offset-2 col-xs-7 col-xs-offset-2 wow fadeInLeft">
+                    <img src="@Url.Content("~/Content/image/mt4_cnx_bg.png")" class="img-responsive" />
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" title="Currenex">
+                        <param name="movie" value="../UpLoad/Video/currenexShow15.swf">
+                        <param name="quality" value="high">
+                        <param name="wmode" value="Opaque">
+                        <param name="BGCOLOR" value="#000000">
+                        <embed class="object" src="../UpLoad/Video/currenexShow15.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" bgcolor="#000000" wmode="transparent">
+                    </object>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 mt4_cnx_right">
+                <div class="col-xs-12 center-block wow fadeInRight">
+                    <table class="table table-bordered ">
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtName" class="col-sm-3 control-label">姓名</label>
+                                    <div class="col-sm-8">
+                                        <input type="email" class="form-control" id="txtName" placeholder="姓名">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtCompanyName" class="col-sm-3 control-label">公司名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" id="txtCompanyName" placeholder="公司名称">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtEmail" class="col-sm-3 control-label">邮箱</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" id="txtEmail" placeholder="邮箱">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtPhone" class="col-sm-3 control-label">电话</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" id="txtPhone" placeholder="电话">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtExplation" class="col-sm-3 control-label">备注</label>
+                                    <div class="col-sm-8">
+                                        <input type="password" class="form-control" id="txtExplation" placeholder="备注">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="btn btn-success btn-group-lg center-block" type="button">提交申请</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>*@
+
+
+        @{Html.RenderPartial("_Foot");}
+
+    </div>
+    <script src="@Url.Content("~/Scripts/js/nav/wow.min.js")"></script>
+    <script>
+        new WOW().init();
+    </script>
+</body>
+</html>

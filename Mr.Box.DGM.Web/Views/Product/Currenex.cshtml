@@ -1,0 +1,224 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Currenex|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+    <script src="~/Scripts/icheck/icheck.min.js"></script>
+    <link href="~/Scripts/icheck/skins/square/green.css" rel="stylesheet" />
+    <script src="~/Scripts/js/Common.js"></script>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+        }
+         .form-group .control-label,label {
+            color: #FFF;
+            text-align: right;
+        }
+
+        .form-group .form-control {
+            background-color: transparent;
+            background-image: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='currenex']").iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+                increaseArea: '20%' // optional
+            });
+        });
+
+        function submitData() {
+            var type = $("input[type='radio']:checked");
+            var name = $("#txtName").val();
+            var email = $("#txtEmail").val();
+            var phone = $("#txtPhone").val();
+            var exp = $("#txtExplation").val().trim();
+            if (delHtmlTag(name).length === 0 || delHtmlTag(phone).length === 0 || delHtmlTag(email).length === 0||delHtmlTag(exp).length === 0) {
+                layer.msg('请填写您的姓名、邮箱、电话、备注!'); return;
+                //bootbox.alert("请填写您的姓名、邮箱、电话!");return
+            }
+            if (!CheckMail(email)) {
+                layer.msg('请填写正确的邮箱!'); return;
+            }
+            $.ajax({
+                type:"POST",async:true,url:'@Url.Content("~/Product/LeaveMsg")',
+                data: {
+                    "name": name, "company": $("#txtCompanyName").val().trim(),
+                    "email": email, "phone": phone, "exp":exp, "type": type,"address":""
+                }, success: function (msg)
+                {
+                    if (msg) {
+                        layer.msg('提交成功，请等待客服人员联系');
+                    }
+                }
+            });
+        }
+
+       
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+
+        <div id="inSlider" class="carousel slide carousel-fade row" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <div class="container">
+                        <div class="carousel-caption1 slower wow fadeInLeft">
+                        </div>
+                    </div>
+                    <!-- Set background for slide in css -->
+                    <div class="header_back cnx_top wow fadeInRight"></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="mt4_cnx">
+            <div class="container containerMtop">
+                <div class="row" id="movieposters">
+                    <div class="col-sm-4 col-sm-offset-0 col-xs-8 col-xs-offset-2" title="Classic">
+                        <img src="@Url.Content("~/Content/image/cnx_01.png")" class="img-responsive  wow fadeInLeft" alt="Classic" />
+                        <div class="movieinfo text-center wow rollIn">
+                            <p>Currenex Classic是一种基于<br />Java(web)的交易平台。</p>
+                            <a href="@Url.Content("~/Product/Classic")" target="_blank" title="Classic">Classic</a>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-4  col-sm-offset-0 col-xs-8 col-xs-offset-2" title="Viking">
+                        <img src="@Url.Content("~/Content/image/cnx_02.png")" class="img-responsive wow fadeInDown" alt="Viking" />
+                        <div class="movieinfo text-center wow bounceInDown">
+                            <p>除了传统的趋势分析，<br />优越的图表工具还提供了额外<br />的31种技术分析工具。</p>
+                            <a href="@Url.Content("~/Product/Viking")" target="_blank" title="Viking">Viking</a>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-4  col-sm-offset-0 col-xs-8 col-xs-offset-2" title="API">
+                        <img src="@Url.Content("~/Content/image/cnx_03.png")" class="img-responsive wow fadeInRight" alt="API" />
+                        <div class="movieinfo text-center wow lightSpeedIn">
+                            <p>MT4交易平台可以通过桥<br />接与我们的交易端口(API)<br />进行完美的无缝对接。</p>
+                            <a href="@Url.Content("~/Product/API")" target="_blank" title="API">API</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row">
+            <div class="col-sm-6 col-xs-12 mt4_cnx_left flash">
+                <div class="col-sm-7 col-sm-offset-2 col-xs-7 col-xs-offset-2 wow fadeInLeft">
+                    <img src="@Url.Content("~/Content/image/mt4_cnx_bg.png")" class="img-responsive" />
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" title="Currenex">
+                        <param name="movie" value="../UpLoad/Video/currenexShow15.swf">
+                        <param name="quality" value="high">
+                        <param name="wmode" value="Opaque">
+                        <param name="BGCOLOR" value="#000000">
+                        <embed class="object" src="../UpLoad/Video/currenexShow15.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" bgcolor="#000000" wmode="transparent">
+                    </object>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 mt4_cnx_right" id="table-currenex">
+                <div class="col-xs-12 center-block wow fadeInRight">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtName" class="col-sm-3 control-label">姓名</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="txtName" placeholder="姓名">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtCompanyName" class="col-sm-3 control-label">公司名称</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="txtCompanyName" placeholder="公司名称">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtEmail" class="col-sm-3 control-label">邮箱</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="txtEmail" placeholder="邮箱">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtPhone" class="col-sm-3 control-label">电话</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="txtPhone" placeholder="电话">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="txtExplation" class="col-sm-3 control-label">备注</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" id="txtExplation" placeholder="备注"></textarea>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group text-center">
+                                    
+                                    <input type="radio" id="Classic" name="currenex" value="Currenex Classic" checked="checked"/><label for="Classic">Classic</label>
+                                    <input type="radio" id="Viking" name="currenex" value="Currenex Viking"/><label for="Viking">Viking</label>
+                                    <input type="radio" id="Stream" name="currenex" value="API Stream"/><label for="Stream">API Stream</label>
+                                    <input type="radio" id="Trading" name="currenex" value="API Trading"/><label for="Trading">API Trading</label>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <button class="btn btn-success btn-group-lg center-block" type="button" onclick="submitData();">提交申请</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        @{Html.RenderPartial($"_Foot");}
+
+    </div>
+    <script src="@Url.Content("~/Scripts/js/nav/wow.min.js")"></script>
+    <script>
+        new WOW().init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>账户入金</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/js/AccountDepoist.js"></script>
+    @*<script src="~/Scripts/jquery.md5.js"></script>*@
+
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[2]).addClass("active");
+
+            //////////////////////////GetUserInfo();
+
+            $(".account_left").css("display", "none");
+            $(".account_right").css("display", "block").css("height", "350px");
+            $(".depoist_left").click(function () {
+                $(".account_left").css("display", "block");
+                $(".account_right").css("display", "none");
+            })
+            $(".depoist_right").click(function () {
+                $(".account_left").css("display", "none");
+                $(".account_right").css("display", "block").css("height", "350px");
+            })
+            //////////////////$(".depclose").click(function () {
+            //////////////////    $("#showDialog").hide(); $("#screen").hide();
+            //////////////////})
+            ////////////////////$("#btn_submit").ligerButton({ width: 100 })
+        })
+
+        function GetUserInfo() {
+            $.ajax({
+                type: "POST", async: false, url: '@Url.Content("~/Agency/Mt4AccountInfo")',
+                success: function (data) {
+                    $("#txtAccouont").val(data.DGMUser_Login);
+                    $("#txtAddress").val(data.DGMUser_Address);
+                    $("#txtEmail").val(data.DGMUser_Property1); $("#txtPhone").val(data.DGMUser_Phone);
+                }
+            })
+        }
+
+        function Update() {
+            document.getElementById("txtAccouont").readOnly = false;
+            document.getElementById("txtAddress").readOnly = false;
+            document.getElementById("txtEmail").readOnly = false;
+            document.getElementById("txtPhone").readOnly = false;
+            //$("#txtAccouont").val(""); $("#txtName").val(""); $("#txtAddress").val("");
+            //$("#txtEmail").val(""); $("#txtPhone").val("");
+            ///////////////////$.ligerDialog.success("现在可进行第三方入金!")
+        }
+
+        function getFloatStr(num) {
+            num += '';
+            num = num.replace(/[^0-9|\.]/g, ''); //清除字符串中的非数字非.字符
+
+            if (/^0+/) //清除字符串开头的0
+                num = num.replace(/^0+/, '');
+            if (!/\./.test(num)) //为整数字符串在末尾添加.00
+                num += '.00';
+            if (/^\./.test(num)) //字符以.开头时,在开头添加0
+                num = '0' + num;
+            num += '00';        //在字符串末尾补零
+            num = num.match(/\d+\.\d{2}/)[0];
+
+            return num;
+        }
+
+        function DepoistSubmit() {
+            if (DepositDateCheck()) {
+                $("#screen").width($(document).width());
+                $("#screen").height($(document).height());
+                $("#screen").css("left", "0px").css("top", "0px");
+                $("#screen").show();//遮罩层
+                $("#showDialog").show();//弹出层
+
+                SubmitDeposit();
+                document.getElementById("Depositform_Deposit").submit();
+            }
+        }
+    </script>
+    @*<script type="text/javascript">
+            //提交数据
+            //环讯支付http://www.ips.com/Service/DownCenterList20e4.html?cid=16&s=1
+            function SubmitDeposit() {
+                var money = $("#txtMoney").val(); //金额
+                money = getFloatStr(money);
+                var Email = $("#txtEmail").val(); //Email
+                var Account = $("#txtAccouont").val(); //账户
+                var Address = $("#txtAddress").val(); //地址
+
+                var Name = $("#txtName").val(); //姓名
+                var Phone = $("#txtPhone").val(); //电话
+                var Supplement = $("#txtExplain").val(); //补充说明
+                var PlatformType = $("input[name='current_Type']:checked").val(); //账户所属平台
+
+                //订单日期
+                var myDate = new Date();
+                var D_Year = myDate.getFullYear() + ""; //获取完整的年份(4位,1970-????)
+                var D_Month = myDate.getMonth() + 1;  //获取当前月份(0-11,0代表1月)
+                var D_Day = myDate.getDate(); //获取当前日(1-31)
+                var D_Hours = myDate.getHours(); //获取当前小时数(0-23)
+                var D_Minutes = myDate.getMinutes(); //获取当前分钟数(0-59)
+                var D_Seconds = myDate.getSeconds();     //获取当前秒数(0-59)
+                var D_Milliseconds = myDate.getMilliseconds();    //获取当前毫秒数(0-999)
+                var D_Date = D_Year + (D_Month < 10 ? "0" + D_Month : D_Month) + (D_Day < 10 ? "0" + D_Day : D_Day);
+
+                //商户订单编号
+                var Billno = D_Date + (D_Hours < 10 ? "0" + D_Hours : D_Hours) + (D_Minutes < 10 ? "0" + D_Minutes : D_Minutes);
+
+                var OrderNumber = Billno + (D_Seconds < 10 ? "0" + D_Seconds : D_Seconds) + D_Milliseconds;
+
+                var Mer_data = money + "&" + Account + "&" + Address + "&" + Name + "&" + Email + "&" + Phone + "&" + Supplement + "&" + PlatformType + "&" + OrderNumber;
+                //将值存入session中
+                $.ajax({
+                    type: "POST", async: true, url: '@Url.Content("~/Agency/OnlineDeposit")', data: {
+                        "money": money, "account": Account, "address": Address, "name": Name, "email": Email, "phone": Phone, "supplement": Supplement, "platformType": PlatformType, "orderNumber": OrderNumber, "billno": Billno
+                    }, success: function (data) { }
+                })
+
+
+                //var form_url = "https://pay.ips.net.cn/ipayment.aspx"; // 提交测试系统URL
+                var form_url = "https://pay.ips.com.cn/ipayment.aspx" //提交正式系统URL
+                //var Mer_code = "000015";
+                var Mer_code = "019845";  //商户号
+                //var Mer_code = "026091";  //商户号
+                $(".Mer_code_Deposit").val(Mer_code);
+
+                //商户证书登陆http://merchant.ips.com.cn/商户后台下载的商户证书内容
+                //var Mer_key = "GDgLwwdK270Qj1w4xho8lyTpRQZV9Jm5x4NwWOTThUa4fMhEBK9jOXFrKRT6xhlJuU2FEa89ov0ryyjfJuuPkcGzO5CeVx5ZIrkkt1aBlZV36ySvHOMcNv8rncRiy3DQ";
+                var Mer_key = "75063883549352501246651138596975925426112202685729763141483439666432708412434945277710188303368364524301135170754715194525430514";
+                //var Mer_key = "39623688139801517515914269939447918705664553228860304662446375879188281294146103107913225626829868403968911052533216795596255536";
+                //订单金额(保留2位小数)
+                $(".Amount_Deposit").val(money);
+
+
+                $(".Date_Deposit").val(D_Date);
+
+                //    //商户订单编号
+                //    var Billno = D_Date + (D_Hours < 10 ? "0" + D_Hours : D_Hours) + (D_Minutes < 10 ? "0" + D_Minutes : D_Minutes);
+                $(".Billno_Deposit").val(Billno);
+
+                //币种
+                var Currency_Type = "RMB";
+                $(".Currency_Type_Deposit").val(Currency_Type);
+                //支付卡种
+                var Gateway_Type = "01";
+                $(".Gateway_Type_Deposit").val(Gateway_Type);
+                //语言
+                var Lang = "GB";
+                $(".Lang_Deposit").val(Lang);
+
+                //支付结果成功返回的商户URL
+                var Merchanturl = "http://cn.dgmfx.com/Agency/ReturnDepositInfo";
+                //var Merchanturl = '@Url.Content("~/Agency/ReturnDepositInfo")';
+                $(".Merchanturl_Deposit").val(Merchanturl);
+                //支付结果失败返回的商户URL
+                var FailUrl = "";
+                $(".FailUrl_Deposit").val(FailUrl);
+                //支付结果错误返回的商户URL
+                var ErrorUrl = "";
+                $(".ErrorUrl_Deposit").val(ErrorUrl);
+                //商户数据包
+                var Attach = Mer_data;//用户入金信息
+                $(".Attach_Deposit").val(Attach);
+                //显示金额
+                $(".DispAmount_Deposit").val(money);
+                //订单支付接口加密方式
+                var OrderEncodeType = "5";
+                $(".OrderEncodeType_Deposit").val(OrderEncodeType);
+                //交易返回接口加密方式
+                var RetEncodeType = "17";
+                $(".RetEncodeType_Deposit").val(RetEncodeType);
+                //返回方式
+                var Rettype = "1";
+                $(".Rettype_Deposit").val(Rettype);
+
+                //Server to Server 返回页面URLhttp://www.asiadgm.com/ReturnDepositInfo.aspx
+                var ServerUrl = "http://cn.dgmfx.com/Agency/ReturnDepositInfo";
+                $(".ServerUrl_Deposit").val(ServerUrl);
+
+                //订单支付接口的Md5摘要，原文=billno+订单编号+ currencytype +币种+ amount +订单金额+ date +订单日期+ orderencodetype +订单支付接口加密方式+商户内部证书字符串
+                var SignMD5 = "billno" + Billno + "currencytype" + Currency_Type + "amount" + money + "date" + D_Date + "orderencodetype" + OrderEncodeType + Mer_key;
+
+
+                $(".SignMD5_Deposit").val($.md5(SignMD5));
+
+            }
+
+        </script>*@
+    <style>
+        .account_right, .table {
+            width: 700px;
+            margin: 50px auto;
+        }
+
+        iframe {
+            width: 100%;
+            min-height: 400px;
+            border: none;
+        }
+        /*.account_left{display:none;}*/
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">账户入金</h3>
+            </div>
+            <div class="panel-body">
+
+
+
+
+                <p>DGM FX为客户提供两种便捷的汇款方式</p>
+                <p>在您获取DGM FX的真实交易账户之后，你就可以选择以下两种便捷的汇款方式：</p>
+                <p>1、 银行电汇</p>
+                <p style="text-indent:2em;">我们接受美元，欧元，港币，纽币等多种外币的汇入，但是我们的平台只能以美元进行结算，如果您汇入美元以外的其他币种我们将会按照资金到账的当时价格从银行兑换成美元存入您的交易账户，而您的取款只能以美元的方式取款；所以我们推荐您选择美元的电汇入金方式。</p>
+                <p>2、 网银在线支付</p>
+                <p style="text-indent:2em;">目前部分银行支持网银在线电汇，DGM FX也与第三方支付机构签署合作协议，进行网银入金，网银入金单笔最高金额1万美元。 每笔在中国银行当日美元现汇卖出价的汇率基础上另收0.5%手续费，最高2000元</p>
+                <div class="row">
+                    <div class="col-xs-6 depoist_left"><img src="~/Content/image/DepositAccounts_0001.jpg" class="img-responsive center-block" alt="银行汇款" /></div>
+                    <div class="col-xs-6 depoist_right"><img src="~/Content/image/DepositAccounts_0002.jpg" class="img-responsive center-block" alt="网银汇款" /></div>
+                </div>
+                <div class="row account_left center-block">
+                    <table class="table table-bordered">
+                        <thead><tr><td colspan="2" class="thead"><label>请汇款至以下账户并联系客服</label></td></tr></thead>
+                        <tbody>
+                            <tr><td><label>HSBC Hong Kong</label></td><td><label>银行帐号：801 316654 838</label></td></tr>
+                            <tr><td colspan="2"><label>Swift代码：HSBCHKHHHKH</label> </td></tr>
+                            <tr><td><label>ABA代码： 004</label></td><td><label>银行地址：One Queen's Road Central, Hong Kong </label></td></tr>
+                            <tr><td colspan="2"><label>收款方：DECODER GLOBAL MARKETS</label></td></tr>
+                            <tr><td colspan="2"><label>请注意：HSBC（汇丰银行）保留对汇入款项收取15-25美元手续费的权利。</label></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row account_right">
+                    <iframe src="http://asiadgm.com/DGMFX/Index"></iframe>@*http://asiadgm.com/Pay/Index*@
+                    @*<table border="0" cellpadding="0" cellspacing="0" width="700">
+                            <thead><tr><td colspan="4" class="thead">网上支付<label id="UPdate" onclick="Update();">修改</label></td></tr></thead>
+                            <tbody>
+                                <tr><td class="left">入金额:(RMB)</td><td><input id="txtMoney" type="text" size="30" /></td><td class="_left">交易账号:</td><td><input id="txtAccouont" type="text" size="25" /></td></tr>
+                                <tr><td class="left">账号所属平台:</td><td colspan="3"><input type="radio" name="current_Type" value="Meta Trader4" checked="checked" />Meta Trader4<input type="radio" name="current_Type" value="Currenex Viking" />Currenex Viking<input type="radio" name="current_Type" value="Currenex Classic" />Currenex Classic</td></tr>
+                                <tr><td class="left">姓名:</td><td><input id="txtName" type="text" size="25" /></td><td class="_left">地址</td><td><input id="txtAddress" type="text" size="30" /></td></tr>
+                                <tr><td class="left">电话</td><td><input id="txtPhone" type="text" size="30" /></td><td class="_left">Email</td><td><input id="txtEmail" type="text" size="30" /></td></tr>
+                                <tr><td class="left">补充说明</td><td colspan="3"><textarea id="txtExplain" style="width:500px;height:50px; margin:5px 0 0 20px;">这里输入补充说明...</textarea></td></tr>
+                            </tbody>
+                            <tfoot><tr><td colspan="4"><input id="btn_submit" type="button" value="提交入金申请" onclick="DepoistSubmit();" /></td></tr></tfoot>
+                        </table>*@
+
+                    @*<form id="Depositform_Deposit" action="https://pay.ips.com.cn/ipayment.aspx" method="post" target="_blank">
+                                        <div>
+                                            <input type="hidden" name="Mer_code" class="Mer_code_Deposit" />
+                                            <input type="hidden" name="Billno" class="Billno_Deposit" />
+                                            <input type="hidden" name="Amount" class="Amount_Deposit" />
+                                            <input type="hidden" name="Date" class="Date_Deposit" />
+                                            <input type="hidden" name="Currency_Type" class="Currency_Type_Deposit" />
+                                            <input type="hidden" name="Gateway_Type" class="Gateway_Type_Deposit" />
+                                            <input type="hidden" name="Lang" class="Lang_Deposit" />
+                                            <input type="hidden" name="Merchanturl" class="Merchanturl_Deposit" />
+                                            <input type="hidden" name="FailUrl" class="FailUrl_Deposit" />
+                                            <input type="hidden" name="ErrorUrl" class="ErrorUrl_Deposit" />
+                                            <input type="hidden" name="Attach" class="Attach_Deposit" />
+                                            <input type="hidden" name="OrderEncodeType" class="OrderEncodeType_Deposit" />
+                                            <input type="hidden" name="RetEncodeType" class="RetEncodeType_Deposit" />
+                                            <input type="hidden" name="Rettype" class="Rettype_Deposit" />
+                                            <input type="hidden" name="ServerUrl" class="ServerUrl_Deposit" />
+                                            <input type="hidden" name="SignMD5" class="SignMD5_Deposit" />
+                                        </div>
+                                    </form>
+                                    <div id="screen"></div>
+                        <div id="showDialog">
+                            <img src="~/Images/ClientLogin/Deposit.png" width="750" />
+                            <img src="~/Images/ClientLogin/depositclose.jpg" class="depclose" />
+                        </div>
+                    *@
+                </div>
+
+                <div class="row">
+                    <p style="text-indent:2em;">注：DGM FX不接受任何第三方形式的银行电汇或者资金存入，存入银行信息必须要与您开设的交易账户信息相同。 以便为了我们可以在第一时间查询到您的存款为您入金到您的交易账户，请在汇款是注明：“姓名和交易账号”比如：“zhang san 139*****”</p>
+                    <p style="text-indent:2em;">如果有更多的关于入金的问题请发送邮件到: <a href="mailto:info@dmgfx.com">info@dmgfx.com</a> 的邮箱当中进行咨询或者咨询我们的<a href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn" target="_blank">在线客服</a>人员。</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    @{Html.RenderPartial("Foot");}
+</body>
+</html>

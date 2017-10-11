@@ -1,0 +1,161 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>订单查询</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap/datetimepicker/date/moment.js"></script>
+    <link href="~/Scripts/bootstrap/datetimepicker/date/daterangepicker-bs3.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap/datetimepicker/date/daterangepicker.js"></script>
+
+    <link href="~/Scripts/bootstrap/table/bootstrap-table.min.css" rel="stylesheet" />
+    
+    @Scripts.Render("~/bootstraptable")
+    <style type="text/css">
+      
+        input[type=text] {
+            margin-right: 15px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#reservation').daterangepicker(null, function (start, end, label) {
+                //alert(start); alert(end);
+                //console.log(start.toISOString(), end.toISOString(), label);
+            });
+            $(".cancelBtn")
+                .click(function() {
+                    $('#reservation').val("");
+                    $table.bootstrapTable('refresh');
+                });
+
+            $(".applyBtn")
+                .click(function() {
+                    $table.bootstrapTable('refresh');
+                });
+
+        });
+        $(function() {
+            $($(".topcontainer .nav li")[1]).addClass("active");
+
+            initTable();
+            $("#search")
+                .click(function() {
+                    $table.bootstrapTable('destroy'); //销毁表格
+                    initTable(); //$table.bootstrapTable('refresh');
+                });
+
+        });
+
+        function initTable() {
+            $("#modal_progress").modal('show');
+            var queryUrl = '@Url.Content("~/Agency/GetOrders")' + '?rnd=' + +Math.random();
+            $table = $("#showData")
+                .bootstrapTable({
+                    columns: [
+                        { 'title': '订单号', 'field': 'TICKET', footerFormatter: totalTextFormatter },
+                        { 'title': '账号', 'field': 'LOGIN' },
+                        { 'title': '品种', 'field': 'SYMBOL' },
+                        { 'title': '订单类型', 'field': 'CMD' },
+                        { 'title': '成交量', 'field': 'VOLUME', footerFormatter: sumFormatter },
+                        { 'title': '价格', 'field': 'OPEN_PRICE' },
+                        { 'title': '止损', 'field': 'SL' },
+                        { 'title': '止盈', 'field': 'TP' },
+                        { 'title': '下单时间', 'field': 'OPEN_TIME' },
+                        { 'title': '佣金', 'field': 'COMMISSION', footerFormatter: sumFormatter },
+                        { 'title': '利息', 'field': 'SWAPS', footerFormatter: sumFormatter },
+                        { 'title': '获利', 'field': 'PROFIT', footerFormatter: sumFormatter }
+                    ],
+                    ////////height: $(window).height() - 200,
+                    url: queryUrl,
+                    method: 'post', //用Form接收
+                    contentType: "application/x-www-form-urlencoded", //必须的
+                    toolbar: '#toolbar',
+                    sortName: 'TICKET',
+                    sortOrder: 'desc',
+                    pagination: true,
+                    showFooter: true,
+                    showExport: true, //是否显示导出
+                    exportDataType: "basic",
+                    searchOnEnterKey: true,
+                    pageNumber: 1,
+                    //detailView: true,//父子表
+                    showRefresh: true,
+                    sidePagination: "server", //服务端请求
+                    showToggle: true,
+                    showColumns: true,
+                    pageSize: 50,
+                    search: false, //不显示 搜索框
+                    pageList: [20, 50, 100, 500, 1000],
+                    queryParams: function(params) { return queryParamsFormatter(params) },
+                    onLoadSuccess: function(data) { $("#modal_progress").modal('hide'); },
+                    onRefresh: function(params) { $("#modal_progress").modal('show'); },
+                    onPageChange: function(number, size) { $("#modal_progress").modal('show'); }
+                });
+        }
+
+        function queryParamsFormatter(params) {
+            return {
+                pageSize: params.limit,
+                offset: params.offset,
+                search: $("#searchText").val(),// params.searchText,
+                sort: params.sortName,
+                order: params.sortOrder,
+                dateTime: $('#reservation').val()
+            }
+        }
+
+        //求和
+        function sumFormatter(data) {
+            var field = this.field;
+            return (data.reduce(function (sum, row) {
+                return sum + (+row[field]);
+            }, 0)).toFixed(2);
+        }
+        function totalTextFormatter(data) {
+            return 'Total';
+        }
+
+        
+
+    </script>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+    <div class="container mTop">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">订单查询</h3>
+            </div>
+            <div class="panel-body">
+                <div id="toolbar">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                <input type="text" readonly name="reservation" id="reservation" class="form-control" value="" placeholder="查询日期" />
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                                <input type="text" id="searchText" class="form-control" placeholder="账号/订单号" />
+                                <button type="button" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;查&nbsp;询&nbsp;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="showData" class="table table-striped"></table>
+            </div>
+        </div>
+
+        
+    </div>
+    @{Html.RenderPartial("Foot");}
+</body>
+</html>

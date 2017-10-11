@@ -1,0 +1,262 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DGM用户登录</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jsCollection")
+
+    <script type="text/javascript">
+        var isAgentsManager; var IsCookieManager; var IsOrganizationManager;
+        var _w,_h;
+        $(function () {
+            _w= document.documentElement.clientWidth;
+            _h= document.documentElement.clientHeight;
+            
+            isAgentsManager = $("#IsAgents").ligerCheckBox({});
+            IsCookieManager = $("#IsCookie").ligerCheckBox({});
+            IsOrganizationManager = $("#IsOrganization").ligerCheckBox({});
+            $("#IsAgents").change(function () {
+                //isAgentsManager.getValue() == true ? IsOrganizationManager.setDisabled() : IsOrganizationManager.setEnabled();
+                isAgentsManager.getValue() == true ? IsOrganizationManager.setValue(false) : IsOrganizationManager.setValue(false);
+            })
+            $("#IsOrganization").change(function () {
+                //IsOrganizationManager.getValue() == true ? isAgentsManager.setDisabled() : isAgentsManager.setEnabled();
+                IsOrganizationManager.getValue() == true ? isAgentsManager.setValue(false) : isAgentsManager.setValue(false);
+            })
+            $.ajax({
+                type: "POST", async: true, url: '@Url.Content("~/Agency/IsSaveCookie")',
+                success: function (data) {
+                    if (data.length > 0) {
+                        var user = data.split("#");
+                        $("#txtName").css("background-image", "none");
+                        $("#txtPwd").css("background-image", "none");
+                        $("#txtName").val(user[0]);
+                        $("#txtPwd").val(user[1]);
+                        if (user[2] == "true" || user[2] == true) {
+                            IsCookieManager.setValue(true);
+                        }
+                       
+                    } else {
+                        $("#txtName").val("");
+                        $("#txtPwd").val("");
+                        //document.getElementById("txtName").focus();
+                    }
+                }
+            })
+
+
+
+            $("#txtName").focus(function () {
+                $("#txtName").css("background-image", "none");
+            }).blur(function () {
+                if ($("#txtName").val().length > 0) {
+                    $("#txtName").css("background-image", "none");
+                }
+                else {
+                    $("#txtName").css("background-image", "url(../../Images/ClientLogin/user.png)");
+                }
+            })
+
+            $("#txtPwd").focus(function () {
+                $("#txtPwd").css("background-image", "none");
+            }).blur(function () {
+                if ($("#txtPwd").val().length > 0) {
+                    $("#txtPwd").css("background-image", "none");
+                }
+                else {
+                    $("#txtPwd").css("background-image", "url(../../Images/ClientLogin/pwd.png)");
+                }
+            })
+        })
+
+        function Ckeck() {
+            if ($("#txtName").val().replace(/[]/g, "").length == 0) {
+                return false;
+            } if ($("#txtPwd").val().replace(/[]/g, "").length == 0) {
+                return false;
+            }
+            return true;
+        }
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                Login();
+            }
+        })
+        window.onresize = function () {
+            var sss = ($("#screen").css("display"));
+            if (sss=="block") {
+                $("#screen").width($(document).width());
+                $("#screen").height($(document).height());
+                $("#screen").css("left", "0px").css("top", "0px");
+                $("#screen").show();//遮罩层
+                $("#showDialog").show();//弹出层
+            }
+        }
+        function Login() {
+            if (Ckeck()) {
+                //var waiteform = $.ligerDialog.waitting("正在登入中,请稍后...");
+
+                $("#screen").width($(document).width());
+                $("#screen").height($(document).height());
+                $("#screen").css("left", "0px").css("top", "0px");
+                $("#screen").show();//遮罩层
+                $("#showDialog").show();//弹出层
+                //return;
+                var IsOrganization = IsOrganizationManager.getValue();
+                var role = isAgentsManager.getValue() == true ? "Manager" : "User";
+                var isCookie = IsCookieManager.getValue();
+                if (IsOrganization == true) {
+                    $.ajax({
+                        type: "POST", async: true, url: '@Url.Content("~/Agency/InvoiceLogin")',
+                        data: { "userName": $("#txtName").val(), "pwd": $("#txtPwd").val(), "isCookie": isCookie },
+                        success: function (data) {
+                            $("#screen").hide();//遮罩层
+                            $("#showDialog").hide();//弹出层
+                            switch (data) {
+                                case "Failure":
+                                    alert("用户名或密码错误！");
+                                    break;
+                                case "NotPlatformAccountInfo":
+                                    alert("账户信息不全，请与DMG客服联系！");
+                                    break;
+                                case "Success":
+                                    window.location = '@Url.Content("~/Agency/Invoice")';
+                                    break;
+                            }
+                        }, error: function () {
+                            $("#screen").hide();//遮罩层
+                            $("#showDialog").hide();//弹出层
+                        }
+                    })
+                    //alert("正在开发中!");
+                }
+                else {
+                    $.ajax({
+                        type: "POST", async: true, url: '@Url.Content("~/Agency/AgencyLogin")',
+                        data: { "userName": $("#txtName").val(), "pwd": $("#txtPwd").val(), "role": role, "isCookie": isCookie },
+                        success: function (data) {
+                            $("#screen").hide();//遮罩层
+                            $("#showDialog").hide();//弹出层
+                            switch (data) {
+                                case "Success":
+                                    window.location = '@Url.Content("~/Agency/Index")';
+                                    break;
+                                case "Failure":
+                                    alert("用户名或密码错误！");
+                                    break;
+                                case "error":
+                                    alert("网络异常，请稍后再试！");
+                                    break;
+                                case "NotAgents":
+                                    alert("非代理商账户，请选择其他角色登录！");
+                                    break;
+                                case "NotAccountInfo":
+                                    alert("非代理商账户，请选择其他角色登录!");
+                                    break;
+                                case "NotPlatformAccountInfo":
+                                    alert("账户信息不全，请与DMG客服联系！");
+                                    break;
+                            }
+                        }, error: function () {
+                            $("#screen").hide();//遮罩层
+                            $("#showDialog").hide();//弹出层
+                        }
+                    })
+                }
+
+            } else {
+                alert("用户名或密码不能为空");
+            }
+        }
+    </script>
+    
+    <style type="text/css">
+        body {
+            background-size: cover;margin:auto;
+            background: url('../../Images/ClientLogin/login-01.jpg')  no-repeat;
+        }
+
+        .txtName {
+            position: absolute;
+            left: 262px;
+            top: 276px;
+            height: 35px;
+            width: 265px;
+            background: url('../../Images/ClientLogin/user.png') no-repeat 10px center;
+            border: none;
+            padding-left: 10px;
+        }
+
+        .tname {
+            background-image: none;
+        }
+
+        #txtPwd {
+            position: absolute;
+            left: 262px;
+            top: 353px;
+            height: 35px;
+            width: 260px;
+            background: url('../../Images/ClientLogin/pwd.png') no-repeat 15px center;
+            border: none;
+            padding-left: 15px;
+        }
+
+        #IsCookie {
+            position: absolute;
+            left: 262px;
+            top: 406px;
+        }
+
+        #IsAgents {
+            position: absolute;
+            left: 355px;
+            top: 406px;
+        }
+
+        #IsOrganization {
+            position: absolute;
+            left: 435px;
+            top: 406px;
+        }
+
+        #btn_Login {
+            background-image: url('../../Images/ClientLogin/login-btn.png');
+            width: 274px;
+            height: 39px;
+            border: none;
+            position: absolute;
+            left: 263px;
+            top: 450px;
+        }
+        #btn_Login:hover{cursor:pointer;}
+
+        #screen {filter: alpha(opacity=80);opacity: 0.8;background-color: black;display: none;z-index: 1;position: absolute;}
+
+#showDialog {width: 450px;height: 350px;display: none;position: fixed;_position: absolute;z-index: 999;
+top: 50%;left: 50%;margin: -200px 0 0 -200px;overflow: hidden;}
+
+    </style>
+</head>
+<body>
+    <div style="margin:auto;">
+        <input type="text" id="txtName" class="txtName" /><input type="password" id="txtPwd" />
+        <input type="checkbox" id="IsCookie" />
+        <input type="checkbox" id="IsAgents" />
+        <input type="checkbox" id="IsOrganization" />
+        <input type="button" id="btn_Login" value="" onclick="Login();" />
+    </div>
+    <div id="screen">
+
+    </div>
+    <div id="showDialog">
+        <img src="~/Images/img/loading.gif" width="450" />
+    </div>
+</body>
+</html>

@@ -1,0 +1,332 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>附加帐户申请表</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/js/Country.js"></script>
+    <script src="~/Scripts/js/AccountAdditionalApplicationForm.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $($(".topcontainer .nav li")[4]).addClass("active");
+            InitTables();
+
+            $(".WebWithdrawalsSubmitbtn").click(function () {
+                if (CheckWebApplyData()) {
+                    SubmitWebApplyData();
+                }
+            });
+            $("#modalwithdraw")
+                .click(function () {
+                    $("#modal_withdraw").modal('hide');
+                });
+        })
+    </script>
+    <style>
+        .modal_withdrawico {
+            background: url('../../Content/images/dialog-icons.gif') 0 0 no-repeat;
+            width: 48px;
+            height: 48px;
+            border: 0;
+        }
+
+        .modal_withdraw_Con {
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">附加帐户申请表</h3>
+            </div>
+
+            <div class="panel-body">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">本表格用于申请附加帐户，该帐户使用的平台与所提供的帐号相同。</h3>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWAccountHolder">账号</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWAccountHolder" placeholder="账号">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWAccountHolder">用户名</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWAccountHolder" placeholder="用户名">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWTrading_account">交易账号</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWTrading_account" placeholder="交易账号">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">平台</label>
+                                            <div class="col-sm-1">
+                                                <input id="Radio3" type="radio" class="radioInput" name="ckdPlatformName" value="classic" /><label>classic</label>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input id="Radio2" type="radio" class="radioinput" name="ckdPlatformName" value="viking" /><label>viking </label>
+                                            </div>
+                                            <div>
+                                                <input id="Radio1" type="radio" checked="checked" class="radioInput" name="ckdPlatformName" value="meta trader 4" /><label>meta trader 4 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label>客户信息：（必须与现有帐户的信息相符）</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="WWAddress">地址</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWAddress" placeholder="地址">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWPhone">电话</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWPhone" placeholder="电话">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="country">居住国家</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="country"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWProvince">州/省:</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWProvince" placeholder="州/省">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWCity">城市</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWCity" placeholder="城市">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="WWZipCode">邮政编码</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="WWZipCode" placeholder="邮政编码">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="WWEmail">电子邮件地址</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" id="WWEmail" placeholder="电子邮件地址">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="panel-heading">
+                    <label>我请求DGM Service Markets为（上述姓名）开立附加帐户，并特此授权贵公司使用存档的现有帐户信息开立该帐户，但前提是文件完整，并且所有信息均与上述内容相符。</label>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label>请勾选一项：</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-sm-6">
+                                                <input id="rdoAppendThisAccount" type="radio" class="radioInput" name="ckdAccount" value="AppendThisAccount" /><label>新帐户将依附于上述现有帐户。（即可以用现有的用户名和密码访问）</label>
+                                            </div>
+                                            <div>
+                                                <input id="rdoOpenNewAccount" type="radio" class="radioinput" name="ckdAccount" value="OpenNewAccount" /><label>新帐户将使用新的用户名和密码</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label>*开立附加帐户的理由（必填）：</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <textarea class="form-control" id="txtContent" placeholder="开立附加帐户理由（必填）"></textarea>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="text-center">
+                                        <p><label>MetaTrader帐户</label></p>
+                                        <p>所有新的MetaTrader 4帐户的默认手数为10,000个单位</p>
+                                        <p>（“标准帐户”），默认杠杆率为100：1</p>
+                                        <p></p>
+                                        <p>手数可在下达指令时调整。</p>
+                                        <p>要调整杠杆率，请使用<a href="@Url.Content("~/Agency/LeverageChangingForm")" target="_blank">杠杆率变更表</a>。</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center">上述信息必须完整填写，才能处理变更。</h3>
+                </div>
+
+                <p>我/我们特此声明，我/我们提供的信息真实无误。我/我们进一步声明，如有重大变更，我/我们将以书面形式通知DGM，DMG保留核实</p>
+                <p>所提供的信息是否准确，以及在其认为必要时与各方面联系的权利，但并没有这种义务。我/我们确认，DGM《附加帐户表》是具有</p>
+                <p>法律约束力的协议。我/我们已仔细阅读该协议的最新版本，并且我/我们同意接受各项条款和条件的约束。</p>
+                <p>&nbsp;</p>
+                <p>*DGM提醒您考虑提高杠杆率的风险。我/我们理解，市场上相对较小的波动可能按比例放大，对我/我们已存入或将要存入的资金产生较大影响，这</p>
+                <p>可能对我/我们不利，也可能对我/我们有利。我/我们可能损失全部原始保证金，并需要存入额外资金来补仓。</p>
+
+                <div class="text-center"><input type="button" value="提交" class="WebWithdrawalsSubmitbtn btn btn-success" /></div>
+            </div>
+        </div>
+
+    </div>
+    @{Html.RenderPartial("Foot");}
+
+
+    <!-----弹出窗------->
+    <div class="modal fade" id="modal_withdraw" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="reLoginclose" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-1"><div class="modal_withdrawico"></div></div>
+                            <div class="col-xs-10"><span class="modal_withdraw_Con">出金申请提交成功</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalwithdraw" class="btn btn-success">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+</html>

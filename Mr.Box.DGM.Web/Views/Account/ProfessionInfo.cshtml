@@ -1,0 +1,393 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <title>DGMFX--个人信息</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="~/Scripts/js/Country.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            BindSelect("#formGroupJob", Job);
+            BindSelect("#formGroupCountry", Country);
+            BindSelect("#formGroupAHJ_TotalInvestment", Money);
+            BindSelect("#formGroupAHJ_Revenue", Money);
+            LoadData();
+            $("#Prv")
+                .click(function () {
+                    window.location.href = '@Url.Content("~/Account/PersonalInfo")';
+                });
+            $("#Next")
+                .click(function () {
+                    if (CheckNull()) {
+                        $.ajax({
+                            type: "POST",
+                            async: true,
+                            url: '@Url.Content("~/Account/Profession")',
+                            data: {
+                                "jobType": $("#formGroupJob").val(),
+                                "isEnglishJob": $("input[name='IsEnglishJob']:checked").val(),
+                                "employerName": $("#formGroupName").val(),
+                                "country": $("#formGroupCountry").val(),
+                                "province": $("#formGroupProvince").val(),
+                                "city": $("#formGroupCity").val(),
+                                "address": $("#formGroupAddress").val(),
+                                "zipCode": $("#formGroupCode").val(),
+                                "businessNature": $("#formGroupAHJ_BusinessNature").val(),
+                                "post": $("#formGroupAHJ_Post").val(),
+                                "revenue": $("#formGroupAHJ_Revenue").val(),
+                                "totalInvestment": $("#formGroupAHJ_TotalInvestment").val(),
+                                "firstMoney": $("#formGroupFirstMoney").val(),
+                                "source": $("#AHJ_SourceOfFunds").val(),
+                                "otherSource": $("#AHJ_SourceElse").val()
+                            },
+                            success: function (data) {
+                                if (data === "success") {
+                                    window.location = '@Url.Content("~/Account/Classification")';
+                                } else {
+                                    alert("提交超时，请重新提交!");
+                                }
+                            },
+                            error: function () { alert("请检查数据后重新提交!"); }
+                        });
+                    }
+
+                });
+        });
+//        var isTextNull = true;
+        function CheckNull() {
+
+            var inputText = $("input[type='text']");
+            for (var i = 0; i < inputText.length; i++) {
+                if (delHtmlTag($("#" + inputText[i].id).val()) === "") {
+                    $("#" + inputText[i].id).parents(".form-group").addClass("has-error");
+//                    isTextNull = false;
+                    return false;
+                } else {
+                    $("#" + inputText[i].id).parents(".form-group").removeClass("has-error");
+                }
+            }
+            var WWMoney = $("#formGroupFirstMoney").val();
+            var exp = /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/;
+            if (!exp.test(WWMoney)) {
+                $("#formGroupFirstMoney").parents(".form-group").addClass("has-error");
+                return false;
+            }
+
+            return true;
+        }
+
+        function LoadData() {
+            $.ajax({
+                type: "POST",
+                async: true,
+                url: '@Url.Content("~/Account/GetProfession")',
+                success: function (data) {
+                    if (data != null && data != "") {
+                        var item = eval(data);
+                        $("#formGroupCountry").val(item.HirerCountry);
+                        $("#formGroupJob").val(item.ProfessionType);
+                        $("#formGroupName").val(item.HirerName);
+                        $("#formGroupProvince").val(item.HirerProvince);
+                        $("#formGroupCity").val(item.HirerCity);
+                        $("#formGroupAddress").val(item.HirerAddress);
+                        $("#formGroupCode").val(item.ZipCode);
+                        $("#formGroupAHJ_BusinessNature").val(item.NatureOfBusiness);
+                        $("#formGroupAHJ_Post").val(item.Post);
+                        $("#formGroupAHJ_Revenue").val(item.BEFOREYearRevenue);
+                        $("#formGroupAHJ_TotalInvestment").val(item.DepositAndInvestment);
+                        $("#formGroupFirstMoney").val(item.FastIntoCapitalMoney);
+                        $("#AHJ_SourceOfFunds").val(item.SourceOfFunds);
+                        $("#AHJ_SourceElse").val(item.OtherSource);
+                    }
+                }
+            });
+        }
+    </script>
+    <style type="text/css">
+        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            border-top: none;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section class="row openAccount">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="form-horizontal">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-offset-1 control-label">账户持有人信息</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label" for="formGroupJob">职业</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-control" id="formGroupJob"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-8 control-label">您是否在任何受英国金融监管局或其他金融监管机构监管的公司或分支机构工作？</label>
+                                        <div class="col-sm-4"><input type="radio" name="IsEnglishJob" value="是" />是<input type="radio" name="IsEnglishJob" value="否" checked="checked" />否</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-offset-1 control-label">雇主信息详情</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupName">雇主名称</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="formGroupName" placeholder="雇主名称" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 hidden"></div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCountry">国家</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupCountry"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 hidden"></div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupProvince">省份</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupProvince" placeholder="省份">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupCity">城市</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupCity" placeholder="城市">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="formGroupAddress">详细地址</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupAddress" placeholder="地址">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupAHJ_BusinessNature">业务性质</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupAHJ_BusinessNature" placeholder="业务性质">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupAHJ_Post">所在职位</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="formGroupAHJ_Post" placeholder="所在职位">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="formGroupCode">邮编</label>
+                                            <div class="col-sm-4">
+                                                <input class="form-control" type="text" id="formGroupCode" placeholder="邮编">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-offset-1 control-label">财务信息</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupAHJ_Revenue">税前年收入</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupAHJ_Revenue"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupAHJ_TotalInvestment">储蓄投资总额</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="formGroupAHJ_TotalInvestment"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="formGroupFirstMoney">首笔入资金额</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input type="text" id="formGroupFirstMoney" class="form-control" aria-label="Amount (to the nearest dollar)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="AHJ_SourceOfFunds">资金来源</label>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="AHJ_SourceOfFunds">
+                                                    <option value="工作">工作</option>
+                                                    <option value="投资">投资</option>
+                                                    <option value="继承">继承</option>
+                                                    <option value="其他">其他</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label" for="AHJ_SourceElse">其他来源</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="AHJ_SourceElse" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-2 col-sm-offset-4 col-xs-2 col-xs-offset-4">
+                                        <button type="button" class="btn btn_open text-center" id="Prv">上一步</button>
+                                    </div>
+                                    <div class="col-sm-2 col-xs-2">
+                                        <button type="button" class="btn btn_open text-center" id="Next">下一步</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>

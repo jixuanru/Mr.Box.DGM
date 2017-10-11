@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Mr.Box.DGM.Dal.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Mr_Box_DGM_Dal_com_dgmfx_ws_common_WS_Common" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://ws.dgmfx.com:88/ws_common.asmx</Value>
+    </Setting>
+    <Setting Name="Mr_Box_DGM_Dal_com_dgmfx_ws_mysql_WS_MYSQL" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://ws.dgmfx.com:88/ws_mysql.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

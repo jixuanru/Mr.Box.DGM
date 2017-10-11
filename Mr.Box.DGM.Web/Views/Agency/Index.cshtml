@@ -1,0 +1,55 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DGM用户中心--首页</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    @*@Scripts.Render("~/datetimepicker")*@
+    <script src="~/Scripts/bootstrap/datetimepicker/date/moment.js"></script>
+    <link href="~/Scripts/bootstrap/datetimepicker/date/daterangepicker-bs3.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap/datetimepicker/date/daterangepicker.js"></script>
+
+
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="input-prepend input-group">
+                <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span><input type="text" readonly  name="reservation" id="reservation" class="form-control" value="" placeholder="查询日期"/>
+                @*<input class="form-control" id="formGroupBirth" size="15" type="text" value="" readonly placeholder="出生日期">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>*@
+              
+
+            </div>
+            <script type="text/javascript">
+
+                $(document).ready(function () {
+
+                    $('#reservation').daterangepicker(null, function (start, end, label) {
+
+                        console.log(start.toISOString(), end.toISOString(), label);
+
+                    });
+
+                });
+
+            </script>
+
+
+
+
+        </div>
+    </div>
+
+</body>
+</html>

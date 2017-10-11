@@ -1,0 +1,495 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="@Url.Content("~/Scripts/bootstrap/table/bootstrap-table.min.css")" rel="stylesheet" />
+    @Scripts.Render("~/bootstraptable")
+    <link href="@Url.Content("~/Content/bootstrap/css/bootstrap.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/css/animate.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/css/index.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/font-awesome-4.7.0/css/font-awesome.min.css")" rel="stylesheet" />
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        #screen {
+            filter: alpha(opacity=80);
+            opacity: 0.8;
+            background-color: black;
+            display: none;
+            z-index: 9999;
+            position: absolute;
+        }
+
+        .loadEffect {
+            display: none;
+        }
+
+
+        /*********************按钮***********************/
+        .btn-success {
+            background-color: #09897c;
+            border-color: #09897c;
+        }
+
+            .btn-success.active.focus,
+            .tn-success.active:hover,
+            .btn-success:active:focus,
+            .open > .dropdown-toggle.btn-success:focus,
+            .open > .dropdown-toggle.btn-success:hover,
+            .btn-success:hover, .btn-success:active,
+            .open > .dropdown-toggle.btn-success,
+            .btn-success:focus {
+                background-color: transparent;
+                color: #09897c;
+                border-color: #09897c;
+            }
+
+        /*.newsbg{background:url(../../Content/image/news_bg.jpg) center center repeat;background-size:unset;}*/
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#weixin")
+                .click(function () {
+                    layer.tips('<img src="../Content/image/weixin.jpg" class="weixin"/>',
+                        '#weixin',
+                        {
+                            tips: [1, 'transparent'],
+                            time: 4000
+                        });
+                });
+
+        })
+    </script>
+</head>
+<body id="pag-top">
+    <div class="container-fluid">
+
+        <!---导航条--->
+        <div class="navbar-wrapper">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="row text-right language">
+                        <ul class="navbar-right list-unstyled">
+                            <li><a title="微信公众号" href="javascript:;" id="weixin"><i class="fa fa-weixin"></i>&nbsp;</a></li>
+                            <li><a title="在线客服" href="http://chat2.5251.net/jsp_admin/client/chat_blue.jsp?companyId=70102&style=160765&locate=cn" target="_blank"><i class="fa fa-headphones">&nbsp;</i></a></li>
+                            <li><a title="facebook" href="https://www.facebook.com/Decoder-Global-Markets-Limited-1848822238667265/?ref=bookmarks" target="_blank"><i class="fa fa-facebook">&nbsp;</i></a></li>
+                            <li><a title="twitter" href="https://twitter.com/DGMFX" target="_blank"><i class="fa fa-twitter">&nbsp;</i></a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">CN<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="https://cn.dgmfx.com" class="Colorhover">CN</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="https://www.dgmfx.com" class="Colorhover">EN</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+
+                    </div>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">切换导航</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand hidden-xs" href="@Url.Content("~/Home/Index")"><img src="@Url.Content("~/Content/image/logo.png")" /></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#pag-top">首页</a></li>
+                            <li><a href="#platform">交易平台</a></li>
+                            <li><a href="#account">账户服务</a></li>
+                            <li><a href="#product">产品服务</a></li>
+                            <li><a href="#news">最新消息</a></li>
+                            <li><a href="#about">关于我们</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!---导航条--->
+
+        <div id="inSlider" class="carousel slide carousel-fade" data-ride="carousel">
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <div class="container">
+                        <div data-wow-delay="0.5s" class="carousel-caption1 slower wow fadeInLeft">
+                            <h3 style="color:#1fa5c3">选择DGM</h3>
+                            <div style="font-size:72px;"><strong>外匯交易</strong> </div><br />
+                            <button class="btn btn-success" style="font-size:18px;">&nbsp;安全&nbsp;·&nbsp;安心&nbsp;·&nbsp;專業&nbsp;·&nbsp;便捷&nbsp;</button>
+                            <br />
+                            <h3>DGM is the frist choice <br /> for your happy business!</h3>
+                            <p>
+                                <a class="btn btn-success" href="@Url.Content("~/Account/AccountApplication")" role="button" style="font-size:18px;">開設賬戶</a>
+                                <a class="btn btn-success" href="@Url.Content("https://download.mql5.com/cdn/web/decoder.global.markets/mt4/decoderglobalmarkets4setup.exe")" style="font-size:18px;" role="button">下載平臺</a>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Set background for slide in css -->
+                    <div class="header-back one wow fadeInRight"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <section id="platform" class="row">
+            <div class="col-xs-5">
+                <a href="@Url.Content("~/Product/MetaTrader4")"><img src="~/Content/image/h_03.jpg" class="img-responsive wow fadeInLeft" alt="" /></a>
+            </div>
+        </section>
+
+        <section class="row platform">
+            <div class="col-xs-5">
+                <a href="@Url.Content("~/Product/Currenex")"><img src="~/Content/image/h_05.png" class="img-responsive wow fadeInLeft" /></a>
+            </div>
+        </section>
+
+
+        <section id="account" class="row">
+            <div class="col-sm-6 col-lg-6 col-md-6 hidden-xs flash wow fadeInLeft">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <img src="@Url.Content("~/Content/image/h_07_1.png")" class="img-responsive" />
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" title="Currenex">
+                        <param name="movie" value="../UpLoad/Video/currenexShow15.swf">
+                        <param name="quality" value="high">
+                        <param name="wmode" value="Opaque">
+                        <param name="BGCOLOR" value="#000000">
+                        <embed class="object" src="../UpLoad/Video/currenexShow15.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" bgcolor="#000000" wmode="transparent">
+                    </object>
+                </div>
+            </div>
+            <!-- col-xs-12  flash--->
+            <div class="col-xs-12 flash visible-xs  wow fadeInLeft">
+                <div class="col-xs-8 col-xs-offset-2">
+                    <img src="@Url.Content("~/Content/image/h_07_1.png")" class="img-responsive" />
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" title="Currenex">
+                        <param name="movie" value="../UpLoad/Video/currenexShow15.swf">
+                        <param name="quality" value="high">
+                        <param name="wmode" value="Opaque">
+                        <param name="BGCOLOR" value="#000000">
+                        <embed class="object" src="../UpLoad/Video/currenexShow15.swf" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" bgcolor="#000000" wmode="transparent">
+                    </object>
+                </div>
+            </div>
+            <!-- col-xs-12   flash--->
+            <div class="col-sm-6 wow fadeInRight login center-block">
+                <div class="input-group input-group-lg col-xs-8 col-xs-offset-2">
+                    <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-user"></span></span>
+                    <input id="txtName" type="text" class="form-control col-xs-8" placeholder="账号" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group input-group-lg col-xs-8 col-xs-offset-2">
+                    <span class="input-group-addon" id="basic-addon2"><span class="glyphicon glyphicon-lock"></span></span>
+                    <input id="txtPwd" type="password" class="form-control" placeholder="密码" aria-describedby="basic-addon2">
+                </div>
+                <div class="col-xs-4 col-xs-offset-5">
+                    <button type="button" class="btn btn-success" onclick="userLogin();" id="btn_OK" data-loading-text="请稍后...">登&nbsp;&nbsp;&nbsp;录</button>
+                </div>
+            </div>
+            <link href="@Url.Content("~/Content/css/loadgif.css")" rel="stylesheet" />
+            <script type="text/javascript">
+                $(function () {
+                    //$("#btn_OK").click(function () {
+                    //    $(this).button('loading').delay(1000).queue(function () {
+                    //        $(this).button('reset');
+                    //    });
+                    //});
+                    $("#txtName").focus(function () { $("#txtName").parents(".input-group").removeClass("has-error"); });
+                    $("#txtPwd").focus(function () { $("#txtPwd").parents(".input-group").removeClass("has-error"); });
+                });
+                window.onresize = function () {
+                    var sss = ($("#screen").css("display"));
+                    if (sss === "block") {
+                        showScreen();
+                    }
+                }
+                $(document).keydown(function (event) {
+                    if (event.keyCode === 13) {
+                        userLogin();
+                    }
+                })
+                function userLogin() {
+
+                    showScreen();
+                    var login = $("#txtName").val(); var pwd = $("#txtPwd").val();
+                    if (login.trim().length === 0) {
+                        closeScreen();
+                        $("#txtName").parents(".input-group").addClass("has-error");
+
+                    } else if (pwd.trim().length === 0) {
+                        closeScreen();
+                        $("#txtPwd").parents(".input-group").addClass("has-error");
+                    }
+                    else {
+                        var role = "User";
+                        $.ajax({
+                            type: "POST",
+                            async: true,
+                            url: '@Url.Content("~/Agency/AgencyLogin")',
+                            data: { "userName": login, "pwd": pwd, "role": role, "isCookie": true },
+                            success: function (data) {
+                                closeScreen();
+                                switch (data) {
+                                    case "Success":
+                                        window.location = '/Agency/AccountInfo';
+                                        break;
+                                    case "Failure":
+                                        $("#txtPwd").parents(".input-group").addClass("has-error");
+                                        alert("用户名或密码错误！");
+                                        break;
+                                    case "error":
+                                        alert("网络异常，请稍后再试！");
+                                        break;
+                                    case "NotAgents":
+                                        alert("非代理商账户，请选择其他角色登录！");
+                                        break;
+                                    case "NotAccountInfo":
+                                        alert("非代理商账户，请选择其他角色登录!");
+                                        break;
+                                    case "NotPlatformAccountInfo":
+                                        alert("账户信息不全，请与DMG客服联系！");
+                                        break;
+
+                                }
+                            },
+                            error: function () {
+                                closeScreen();
+                                alert("请求失败");
+                            }
+                        });
+                    }
+
+                }
+                function showScreen() {
+                    $("#screen").width($(document).width());
+                    $("#screen").height($(document).height());
+                    $("#screen").css("left", "0").css("top", "0");
+                    $("#screen").show();//遮罩层
+                    $(".loadEffect").show();//弹出层
+                }
+
+                function closeScreen() {
+                    $("#screen").hide();//遮罩层
+                    $(".loadEffect").hide();//弹出层
+                }
+            </script>
+        </section>
+
+
+        <section id="product" class="row">
+            <div class="col-sm-6 col-xs-12 product_left">
+                <div class="row">
+                    <div class="col-xs-4 wow rollIn">
+                        <img src="@Url.Content("~/Content/image/p_class1.png")" class="img-responsive" />
+                        <div class="col-xs-8 col-xs-offset-2 p_class" title="MT4下载"><a href="@Url.Content("https://download.mql5.com/cdn/web/decoder.global.markets/mt4/decoderglobalmarkets4setup.exe")"><img src="@Url.Content("~/Content/image/p_class1_1.png")" class="img-responsive" /></a></div>
+                    </div>
+                    <div class="col-xs-4 wow bounceInDown">
+                        <img src="@Url.Content("~/Content/image/p_class2.png")" class="img-responsive" />
+                    </div>
+                    <div class="col-xs-4 wow lightSpeedIn">
+                        <img src="@Url.Content("~/Content/image/p_class3.png")" class="img-responsive" />
+                        <div class="col-xs-8 col-xs-offset-2 p_class" title="Currenex API"><a href="@Url.Content("~/Product/API")" target="_blank"><img src="@Url.Content("~/Content/image/p_class3_1.png")" class="img-responsive" /></a></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 wow rollIn">
+                        <img src="@Url.Content("~/Content/image/p_class4.png")" class="img-responsive" />
+                    </div>
+                    <div class="col-xs-4 wow pulse">
+                        <img src="@Url.Content("~/Content/image/p_class5.png")" class="img-responsive" />
+                        <div class="col-xs-8 col-xs-offset-2 p_class" title="MT4桥接"><a href="@Url.Content("~/Product/Bridge")" target="_blank"><img src="@Url.Content("~/Content/image/p_class5_1.png")" class="img-responsive" /></a></div>
+                    </div>
+                    <div class="col-xs-4 wow bounceInRight">
+                        <img src="@Url.Content("~/Content/image/p_class6.png")" class="img-responsive" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 wow bounceInLeft">
+                        <img src="@Url.Content("~/Content/image/p_class7.png")" class="img-responsive" />
+                        <div class="col-xs-8 col-xs-offset-2 p_class" title="MT4贴牌"><a href="@Url.Content("~/Product/MT4")" target="_blank"><img src="@Url.Content("~/Content/image/p_class7_1.png")" class="img-responsive" /></a></div>
+                    </div>
+                    <div class="col-xs-4 wow flipInX">
+                        <img src="@Url.Content("~/Content/image/p_class8.png")" class="img-responsive" />
+                    </div>
+                    <div class="col-xs-4 wow bounceInRight">
+                        <img src="@Url.Content("~/Content/image/p_class9.png")" class="img-responsive" />
+                        <div class="col-xs-8 col-xs-offset-2 p_class" title="Currenex 贴牌"><a href="@Url.Content("~/Product/CNX")" target="_blank"><img src="@Url.Content("~/Content/image/p_class9_1.png")" class="img-responsive" /></a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 padding0">
+                <div class="row ">
+                    <div class="col-xs-6 padding0">
+                        <img src="@Url.Content("~/Content/image/baidi.png")" class="img-responsive" />
+                        <div class="col-xs-8 col-xs-offset-2 product_right_top_logo wow flip" title="常见问题"><a href="@Url.Content("~/About/FAQ")" target="_blank"> <img src="@Url.Content("~/Content/image/faq.png")" class="img-responsive" /></a></div>
+                    </div>
+                    <div data-wow-delay="0.2s" class="col-xs-6 padding0 product_right_top wow lightSpeedIn">
+                        <img src="@Url.Content("~/Content/image/qizhinv.png")" class="img-responsive" />
+
+                    </div>
+
+                </div>
+                <div data-wow-delay="0.5s" class="row product_right_buttom wow bounceInDown">
+                    <div class="col-xs-12 padding0" title="交易时间">
+                        <img src="@Url.Content("~/Content/image/shikebiao.png")" class="img-responsive" />
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+
+
+        <section id="news" class="row">
+            <div class="col-md-6 col-sm-12 padding0">
+                <img src="@Url.Content("~/Content/image/dashiji.png")" class="img-responsive center-block" alt="大事记" />
+                <!--轮播图-->
+                <div class="row">
+                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+                        </ol>
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active">
+                                <a href="@Url.Content("~/News/news20170414")"><img src="@Url.Content("~/Content/image/006.jpg")" alt="DGM首场承诺培训大会圆满成功" class="img-responsive center-block"></a>
+                                <div class="carousel-caption">DGM首场承诺培训大会圆满成功</div>
+                            </div>
+                            <div class="item">
+                                <a href="@Url.Content("~/News/news160920")" target="_blank"><img src="@Url.Content("~/Content/image/004.jpg")" alt="第二期外汇交易承诺培训" class="img-responsive center-block"></a>
+                                <div class="carousel-caption">第二期外汇交易承诺培训</div>
+                            </div>
+                            <div class="item">
+                                <a href="@Url.Content("~/News/news160127")" target="_blank"><img src="@Url.Content("~/Content/image/003.jpg")" alt="2016年香港会展" class="img-responsive center-block"></a>
+                                <div class="carousel-caption">2016年香港会展</div>
+                            </div>
+                            <div class="item">
+                                <a href="@Url.Content("~/News/news160101")" target="_blank"><img src="@Url.Content("~/Content/image/002.png")" alt="2016元旦会议" class="img-responsive center-block"></a>
+                                <div class="carousel-caption">2016元旦会议</div>
+                            </div>
+                            <div class="item">
+                                <a href="@Url.Content("~/News/news141008")" target="_blank"><img src="@Url.Content("~/Content/image/001.jpg")" alt="Currenex 平台上线" class="img-responsive center-block"></a>
+                                <div class="carousel-caption">Currenex 平台上线</div>
+                            </div>
+
+                        </div>
+                        <!--Controls-->
+                        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                            <img src="~/Content/image/carousel-control_left.png" class="img-responsive" />
+                            @*<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>*@
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                            @*<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>*@
+                            <img src="~/Content/image/carousel-control_right.png" class="img-responsive" />
+                        </a>
+                    </div>
+                </div>
+                <!--轮播图-->
+            </div>
+            <div class="col-md-6 col-sm-12 padding0 newsbg">
+                <table id="showData" class="table  wow bounceInUp"></table>
+                <script type="text/javascript">
+                    $(function () {
+                        initTable();
+                    });
+
+                    function initTable() {
+                        var queryUrl = '@Url.Content("~/Home/GetNews")' + '?rnd=' + +Math.random();
+                        var $table = $("#showData")
+                            .bootstrapTable({
+                                columns: [
+                                    {
+                                        'title': '',
+                                        'field': 'NewsTitle',
+                                        formatter: function (value, row, index) {
+                                            var _h = "@Url.Content("~/News/Details")";
+                                            _h += "?id=" + row["DGMNewsId"] + "";
+                                            var h = "<a target='_blank' href=" + _h + ">" + value + "</a>";
+                                            return h;
+                                        }
+                                    },
+                                    { 'title': '', 'field': 'CreateDate' }
+                                ],
+                                ////////height: $(window).height() - 200,
+                                url: queryUrl,
+                                method: 'post', //用Form接收
+                                contentType: "application/x-www-form-urlencoded", //必须的
+                                //toolbar: '#toolbar',
+                                sortName: 'CreateDate',
+                                sortOrder: 'desc',
+                                pagination: true, //showFooter: true, showToggle: true, showColumns: true,
+                                // showExport: true,//是否显示导出
+                                //exportDataType: "basic", searchOnEnterKey: true, showRefresh: true,
+                                pageNumber: 1,
+                                //detailView: true,//父子表
+                                sidePagination: "server", //服务端请求
+
+                                pageSize: 23,
+                                search: false, //不显示 搜索框
+                                //pageList: [5],
+                                queryParams: function (params) { return queryParamsFormatter(params) }
+                                //onLoadSuccess: function (data) { $("#modal_progress").modal('hide'); },
+                                //onRefresh: function (params) { $("#modal_progress").modal('show'); },
+                                //onPageChange: function (number, size) { $("#modal_progress").modal('show'); }
+                            });
+                    }
+
+                    function queryParamsFormatter(params) {
+                        return {
+                            pageSize: params.limit,
+                            offset: params.offset,
+                            search: params.searchText,
+                            sort: params.sortName,
+                            order: params.sortOrder
+
+                        }
+                    }
+                </script>
+            </div>
+        </section>
+        <section id="about">
+            @{Html.RenderPartial($"_Foot");}
+        </section>
+        <div id="screen"></div>
+        <div class="loadEffect">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <script src="@Url.Content("~/Scripts/js/nav/pace.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/js/nav/classie.js")"></script>
+    <script src="@Url.Content("~/Scripts/js/nav/cbpAnimatedHeader.js")"></script>
+    <script src="@Url.Content("~/Scripts/js/nav/wow.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/js/nav/inspinia.js")"></script>
+    <script src="@Url.Content("~/Scripts/layer/layer.js")"></script>
+    
+</body>
+</html>

@@ -1,0 +1,220 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>账户信息</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Scripts/bootstrap/table/bootstrap-table.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap/datetimepicker/date/moment.js"></script>
+    <link href="~/Scripts/bootstrap/datetimepicker/date/daterangepicker-bs3.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap/datetimepicker/date/daterangepicker.js"></script>
+    @Scripts.Render("~/bootstraptable")
+    <style type="text/css">
+        
+
+        input[type=text] {
+            margin-right: 15px;
+        }
+        #selectChange li a:hover{cursor:pointer;}
+        .inputIco{color:#02ad9b;}
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#reservation').daterangepicker(null, function (start, end, label) { });
+        });
+        function inputBorder() {
+            $("input[type='text']")
+                .focus(function() {
+                    $(this).css("border-color", "#02ad9b");
+                    $(this).prev(".input-group-addon").addClass("inputIco");
+                })
+                .blur(function() {
+                    $(this).css("border-color", "#ccc");
+                    $(this).prev(".input-group-addon").removeClass("inputIco");
+                });
+        }
+
+        $(function() {
+            $($(".topcontainer .nav li")[0]).addClass("active");
+            inputBorder();
+            initTable();
+
+            $("#search")
+                .click(function() {
+                    $table.bootstrapTable('destroy');
+                    initTable(); //$table.bootstrapTable('refresh');
+                });
+
+            //$("#selectChange").prev(".btn").html(($("#selectChange").prev()).text() + "<span class='caret'></span>");
+
+            $("#selectChange li a")
+                .click(function() {
+                    $("#selectChange").prev(".btn").html($(this).text() + "<span class='caret'></span>");
+                    //alert($("#selectChange").prev(".btn")[0].innerText);
+                    $table.bootstrapTable('refresh');
+                });
+
+        });
+
+        function initTable() {
+            $("#modal_progress").modal('show');
+            var queryUrl = '@Url.Content("~/Agency/GetUsers")' + '?rnd=' + +Math.random();
+            $table = $("#showData")
+                .bootstrapTable({
+                    columns: [
+                        //{ field: 'Number',title: 'Number',formatter: function (value, row, index) {return index+1;}},
+                        { 'title': '帐号', 'field': 'LOGIN' },
+                        { 'title': '姓名', 'field': 'NAME' },
+                        { 'title': '邮箱', 'field': 'EMAIL' },
+                        { 'title': '电话', 'field': 'PHONE' },
+                        { 'title': '代理商', 'field': 'AGENT_ACCOUNT' },
+                        { 'title': '余额', 'field': 'BALANCE' }
+                    ],
+                    ////////height: $(window).height() - 200,
+                    url: queryUrl,
+                    method: 'post', //用Form接收
+                    contentType: "application/x-www-form-urlencoded", //必须的
+                    toolbar: '#toolbar',
+                    sortName: 'LOGIN',
+                    sortOrder: 'desc',
+                    pagination: true, //showFooter: true,
+                    sidePagination: 'server',
+                    showExport: true, //是否显示导出
+                    exportDataType: "basic",
+                    searchOnEnterKey: true,
+                    pageNumber: 1,
+                    detailView: true, //父子表
+                    showRefresh: true,
+                    sidePagination: "server", //服务端请求
+                    showToggle: true,
+                    showColumns: true,
+                    pageSize: 20,
+                    search: false, //不显示 搜索框
+                    pageList: [20, 50, 100, 500, 1000, 2000],
+                    queryParams: function(params) { return queryParamsFormatter(params) },
+                    onLoadSuccess: function(data) { $("#modal_progress").modal('hide'); },
+                    onRefresh: function(params) { $("#modal_progress").modal('show'); },
+                    onPageChange: function(number, size) { $("#modal_progress").modal('show'); },
+                    //注册加载子表的事件。注意下这里的三个参数！
+                    onExpandRow: function(index, row, $detail) {
+                        $("#modal_progress").modal('show');
+                        InitSunTable(index, row, $detail);
+                    }
+                    //url: '@Url.Content("~/Agency/GetUsers")'
+                });
+        }
+
+        function queryParamsFormatter(params) {
+            return {
+                pageSize: params.limit,
+                offset: params.offset,
+                search: $("#searchText").val(),// params.search,
+                sort: params.sortName,
+                order: params.sortOrder,
+                type: $("#selectChange").prev(".btn")[0].innerText
+                //dateTime: ""
+            }
+        }
+
+        //初始化子表格(无线循环)
+        var InitSunTable = function (index, row, $detail) {
+            var parentid = row.LOGIN;
+            var cur_table = $detail.html('<table></table>').find('table');
+
+            $(cur_table).bootstrapTable({
+                url: '@Url.Content("~/Agency/GetStatics")',
+                method: 'post',//Post 请求 用Form获取参数
+                contentType: "application/x-www-form-urlencoded",
+                sortName: 'LOGIN',sortOrder: 'desc',pagination: true,
+                //toolbar: '#toolbarSun',
+                search: false, //不显示 搜索框
+                pageNumber: 1, sidePagination: "server", //服务端请求
+                //showToggle: true, showColumns: true, showRefresh: true,
+                //showExport: true,//是否显示导出
+                //exportDataType: "basic",
+                pageSize: 10,
+                pageList: [10, 20, 50],
+                columns: [
+                { title: '账号', field: 'LOGIN' },
+                { title: '总入金数', field: 'DepositCount' },
+                { title: '总出金数', field: 'WithdrawalCount' },
+                { title: '总成交量', field: 'VOLUMECount' },
+                { title: '佣金总和', field: 'COMMISSION' },
+                { title: '账户净值', field: 'EQUITY' },
+                { title: '利息总和', field: 'SWAPS' },
+                { title: '账户余额', field: 'BALANCE' }
+                ],
+                queryParams: function (params) {
+                    return {
+                        login:parentid,
+                        pageSize: params.limit,
+                        offset: params.offset,
+                        //search: params.search,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    }
+                },
+                onLoadSuccess: function (data) { $("#modal_progress").modal('hide'); },
+                onRefresh: function (params) { $("#modal_progress").modal('show'); },
+                onPageChange: function (number, size) { $("#modal_progress").modal('show'); }
+                //无线循环取子表，直到子表里面没有记录
+                //onExpandRow: function (index, row, $Subdetail) {
+                //    InitSunTable(index, row, $Subdetail);
+                //}
+            });
+        };
+    </script>
+
+</head>
+<body>
+    @{Html.RenderPartial("Top");}
+
+    <div class="container mTop">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h3 class="panel-title">账户信息</h3></div>
+            <div class="panel-body">
+                <div id="toolbar">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                @*<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        <input type="text" readonly name="reservation" id="reservation" class="form-control" value="" placeholder="查询日期" />*@
+                                <!-- Single button -->
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">直属<span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" id="selectChange">
+                                        <li><a>代理商</a></li>
+                                        <li><a>直属客户</a></li>
+                                        <li><a>所有客户</a></li>
+                                        @*<li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li>*@
+                                    </ul>
+                                </div>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                                <input type="text" id="searchText" class="form-control" placeholder="账号" />
+                                <button type="button" class="btn btn-success" id="search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;查&nbsp;询&nbsp;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="showData" class="table table-striped"></table>
+            </div>
+        </div>
+
+       
+    </div>
+
+
+    @{Html.RenderPartial("Foot");}
+
+</body>
+</html>

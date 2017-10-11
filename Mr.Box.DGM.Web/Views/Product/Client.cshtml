@@ -1,0 +1,55 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MT4客户端|DGMFX|MT4贴牌|CURRENEX桥接|银行间流动性提供商</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+</head>
+<body>
+    <div class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+
+        <section class="p_client row">
+            <div class="col-xs-6">
+                <div class="col-xs-4 col-xs-offset-8 wow bounceInLeft"><img src="@Url.Content("~/Content/image/client_01.png")" class="img-responsive" /></div>
+
+            </div>
+            <div class="col-xs-6">
+                <div class="row">
+                    <div class="col-xs-5  wow bounceInRight">
+                        <a href="@Url.Content("~/Account/AccountApplication")" target="_blank"><img src="@Url.Content("~/Content/image/client_openaccount.png")" class="img-responsive" /></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-5  wow bounceInRight">
+                        <a href="https://download.mql5.com/cdn/web/decoder.global.markets/mt4/decoderglobalmarkets4setup.exe"><img src="@Url.Content("~/Content/image/client_download.png")" class="img-responsive" /></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 wow bounceInUp">
+                <img src="@Url.Content("~/Content/image/client_03.png")" class="img-responsive center-block" style="padding:5%;" />
+            </div>
+        </section>
+
+        @{Html.RenderPartial("_Foot");}
+    </div>
+
+    <script src="@Url.Content("~/Scripts/js/nav/wow.min.js")"></script>
+    <script>
+        new WOW().init();
+    </script>
+</body>
+</html>

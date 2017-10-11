@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+   <meta name="viewport" content="width=device-width" />
+    <title>DGMFX--挂单声明</title>
+    <meta name="keywords" content="DGMFX|外汇交易|MT4交易平台|currenex|银行间桥接|外汇交易软件" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/jquery")
+    @Scripts.Render("~/bootstrap")
+    @Styles.Render("~/css")
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+    <div  class="container-fluid">
+        @{Html.RenderPartial("_Top");}
+        
+        <section class="bottom_img">
+            <img src="~/Content/image/PendingStatement.jpg" class="img-responsive center-block" />
+        </section>
+
+        @{Html.RenderPartial("_Foot");}
+    </div>
+</body>
+</html>
+
